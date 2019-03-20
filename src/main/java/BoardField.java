@@ -16,15 +16,15 @@ public class BoardField{
 
     public String getPlayerColor() { return playerColor; }
 
-    public void setPlayerColor(String playerColor) { this.playerColor = playerColor; }
-
-    public BoardField(String fieldColor){
-        if(!checkColorFormat(fieldColor))
+    public void setPlayerColor(String playerColor) {
+        if(!checkColorFormat(playerColor))
             throw new IllegalArgumentException("Wrong string format");
-        this.backgroundColor = fieldColor;
+        this.playerColor = playerColor;
     }
+
     public BoardField(){
-        this.backgroundColor = TerminalColrs.ANSI_YELLOW;
+        backgroundColor = "";
+        playerColor = "";
     }
 
     private boolean checkColorFormat(String color){
