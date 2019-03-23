@@ -2,6 +2,7 @@
 import junitparams.FileParameters;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import junitparams.mappers.IdentityMapper;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.*;
@@ -12,6 +13,7 @@ import org.junit.runners.Parameterized;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -157,44 +159,3 @@ public class BoardTest {
 
 }
 
-@RunWith(JUnitParamsRunner.class)
-class WinTest{
-
-    HashMap<String, Integer> playerMoves;
-    Board b;
-
-    @Before
-    public void setUp(){
-        playerMoves = new HashMap<>();
-        b = new Board();
-    }
-    @Test
-    @FileParameters("src/test/resources/horizontalNegative.csv")
-    public void checkFourHorizontalNegative(String player, int column){
-
-    }
-
-    @Test
-    public void checkFourVerticalNegative(){
-
-    }
-
-    @Test
-    public void checkFourHorizontalPositive(){
-
-    }
-
-    @Test
-    public void checkFourVerticalPositive(){
-
-    }
-
-    @Test
-    public void  checkFourDiagonalNegative(){
-
-    }
-    @Test
-    public void checkFourDiagonalPositive(){
-
-    }
-}

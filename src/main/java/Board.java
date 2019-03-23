@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.HashMap;
 
 public class Board {
@@ -97,18 +98,49 @@ public class Board {
     }
 
     public boolean checkFour(BoardField boardField){
+        Integer[] position = checkFieldCoordintes(boardField);
+
+        if(position == null) return false;
+
+        int x = position[0];
+        int y = position[1];
+
+        if(checkFourHorizontal(boardField, x, y))return true;
+        if(checkFourVertical(boardField, x, y))  return true;
+        if(checkFourDiagonal(boardField, x, y))  return true;
         return false;
     }
 
-    private boolean checkFourHorizontal(){
+    private boolean checkFourHorizontal(BoardField boardField, int fieldRow, int fielColumn){
+        int counter=0;
+        int firstInLeft = fielColumn;
+        String player = playerFields.get(boardField);
+        BoardField next = boardFields[fieldRow][fielColumn];
+        BoardField temp;
+
+        while(playerFields.containsKey(next)&&playerFields.get(next).compareTo(player)==0 && firstInLeft>0) {
+            firstInLeft--;
+            next = boardFields[fieldRow][firstInLeft];
+        }
+
+        temp = boardFields[fieldRow][firstInLeft];
+
+        while(playerFields.containsKey(temp)&&playerFields.get(temp).compareTo(player)==0&&fielColumn<=numberOfColumns){
+            counter++;
+            temp = boardFields[fieldRow][firstInLeft+counter];
+        }
+
+        if(counter>=4)
+            return true;
+        else
+            return false;
+    }
+
+    private boolean checkFourVertical(BoardField boardField, int fieldRow, int fielColumn){
         return false;
     }
 
-    private boolean checkFourVertical(){
-        return false;
-    }
-
-    private boolean checkFourDiagonal(){
+    private boolean checkFourDiagonal(BoardField boardField, int fieldRow, int fielColumn){
         return false;
     }
 
@@ -116,7 +148,19 @@ public class Board {
         if(color == null|| color.length()==0) return false;
         return color.matches("\\u001B\\[[0-9]*m");
     }
-
+    private Integer[] checkFieldCoordintes(BoardField b){
+        int i=0;
+        int j=0;
+        for(i=0;i<numberOfRows;i++) {
+            for (j = 0; j < numberOfColumns; j++) {
+                if (b == boardFields[i][j]) {
+                    Integer[] position = {i, j};
+                    return position;
+                }
+            }
+        }
+        return null;
+    }
     public BoardField[][] getBoardFields() {
         return boardFields;
     }
