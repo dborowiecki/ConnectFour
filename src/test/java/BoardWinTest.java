@@ -27,39 +27,16 @@ public class BoardWinTest{
 
     @Test
     @FileParameters(value = "src/test/resources/horizontalNegative.csv", mapper = TokenMapper.class)
-    public void testMethod(List<Object[]> tokens) {
+    public void checkFourHorizontalNegative(List<Object[]> tokens) {
         b.addPlayer("p1", TerminalColrs.ANSI_RED);
         for(Object[] token: tokens){
             b.addToken((String)token[0],(Integer)token[1]);
         }
         boolean result = b.checkFour(b.getBoardFields()[5][3]);
 
-        assertThat(result, is(true));
-
+        assertThat(result, is(false));
     }
 
-    public static class TokenMapper extends IdentityMapper {
-        @Override
-        public Object[] map(Reader reader) {
-            Object[] map = super.map(reader);
-            List<Object> result = new LinkedList<Object>();
-            for (Object lineObj : map) {
-                String line = lineObj.toString();
-                int index = line.indexOf(",");
-                String player = line.substring(0, index);
-                String columnStr = line.substring(index + 1, line.length());
-                Integer column = Integer.parseInt(columnStr);
-                result.add(new Object[] {player, column});
-            }
-            Object[] out = {result};
-            return out;
-        }
-    }
-    @Test
-    @FileParameters("src/test/resources/horizontalNegative.csv")
-    public void checkFourHorizontalNegative(String player, int column){
-
-    }
 
     @Test
     public void checkFourVerticalNegative(){
@@ -80,8 +57,38 @@ public class BoardWinTest{
     public void  checkFourDiagonalNegative(){
 
     }
-    @Test
-    public void checkFourDiagonalPositive(){
 
+    @Test
+    @FileParameters(value = "src/test/resources/horizontalPositive.csv", mapper = TokenMapper.class)
+    public void checkFourDiagonalPositive(List<Object[]> tokens){
+        b.addPlayer("p1",TerminalColrs.ANSI_RED);
+        b.addPlayer("p2",TerminalColrs.ANSI_CYAN);
+
+        for(Object[] token: tokens){
+            b.addToken((String)token[0],(Integer)token[1]);
+        }
+
+        boolean result = b.checkFour(b.getBoardFields()[4][3]);
+        //System.out.println(b.getBoard());
+
+        assertThat(result, is(true));
+    }
+
+    public static class TokenMapper extends IdentityMapper {
+        @Override
+        public Object[] map(Reader reader) {
+            Object[] map = super.map(reader);
+            List<Object> result = new LinkedList<Object>();
+            for (Object lineObj : map) {
+                String line = lineObj.toString();
+                int index = line.indexOf(",");
+                String player = line.substring(0, index);
+                String columnStr = line.substring(index + 1, line.length());
+                Integer column = Integer.parseInt(columnStr);
+                result.add(new Object[] {player, column});
+            }
+            Object[] out = {result};
+            return out;
+        }
     }
 }
