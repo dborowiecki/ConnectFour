@@ -5,6 +5,7 @@ public class Board {
     private int numberOfRows;
     private BoardField[][] boardFields;
     private HashMap<BoardField, String> playerFields;
+    private HashMap<String, String> playerColors;
 
     public Board(int numberOfColumns, int numberOfRows){
         this.numberOfRows = numberOfRows;
@@ -24,19 +25,36 @@ public class Board {
                 boardFields[i][j] = new BoardField();
 
         playerFields = new HashMap<>();
+        playerColors = new HashMap<>();
     }
 
+    public void addPlayer(String playerName, String playerClor){
+        if(!checkColorFormat(playerClor))
+            throw new IllegalArgumentException("Player color format is wrong");
+
+        if(playerColors.containsKey(playerName))
+            throw new IllegalArgumentException("Player with this name alredy exists");
+
+        playerColors.put(playerName, playerClor);
+
+    }
     public boolean addToken(String player, int column){
         if(column<0||column>=numberOfColumns)
             return false;
 
         int n=numberOfRows-1;
-
+        BoardField field = boardFields[n][column];
         while(n>=0){
-            if(!playerFields.containsKey(boardFields[n][column])){
-                playerFields.put(boardFields[n][column], player);
+            if(!playerFields.containsKey(field)){
 
-                return true;
+                if(playerColors.containsKey(player)) {
+                    playerFields.put(field, player);
+                    field.setPlayerColor(playerColors.get(player));
+                    return true;
+                }
+                else {
+                    throw new IllegalArgumentException("This player was not added to game");
+                }
             }
             n--;
         }
@@ -93,6 +111,12 @@ public class Board {
     private boolean checkFourDiagonal(){
         return false;
     }
+
+    private boolean checkColorFormat(String color){
+        if(color == null|| color.length()==0) return false;
+        return color.matches("\\u001B\\[[0-9]*m");
+    }
+
     public BoardField[][] getBoardFields() {
         return boardFields;
     }
@@ -108,6 +132,9 @@ public class Board {
         return numberOfRows;
     }
 
+    public HashMap<String, String> getPlayerColors() {
+        return playerColors;
+    }
     //private String getUpperLine(int
 
 //    public void drawBoard(){

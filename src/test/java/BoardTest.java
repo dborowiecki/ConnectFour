@@ -1,22 +1,21 @@
 
 import junitparams.FileParameters;
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsMapContaining;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
@@ -48,11 +47,14 @@ public class BoardTest {
             " ◸   ◹  ◸   ◹  ◸   ◹  ◸   ◹  ◸   ◹  ◸   ◹  ◸   ◹ \n"+
                     "|  \u001B[0m   ||  \u001B[0m   ||  \u001B[0m   ||  \u001B[0m   ||  \u001B[0m   ||  \u001B[0m   ||  \u001B[0m   |\n"+
             " ◺   ◿  ◺   ◿  ◺   ◿  ◺   ◿  ◺   ◿  ◺   ◿  ◺   ◿ \n";
+
     @Before
     public void setup() {
          b = new Board();
     }
 
+    @After
+    public void tearUP(){ b = null;}
     public static String readStringFromFile(String fileName)
     {
         try {
@@ -65,8 +67,7 @@ public class BoardTest {
     }
     //@Ignore
     @Test
-    @FileParameters(value = "src/test/resources/empty_board.csv")
-    public void assertGenerateEmptyBoard(String next_line){
+    public void assertGenerateEmptyBoard(){
         String expectedEmptyBoard = EMPTY_BOARD;
         Board board = new Board();
 
@@ -76,6 +77,7 @@ public class BoardTest {
     @Test
     public void assertAddPlayerTokenPositive(){
         String playerName = "Player1";
+        b.addPlayer(playerName, TerminalColrs.ANSI_CYAN);
         boolean result = b.addToken(playerName, 1);
         BoardField expectedBoardField = b.getBoardFields()[b.getNumberOfRows()-1][1];
 
@@ -86,13 +88,14 @@ public class BoardTest {
     @Test
     public void assertAddPlayerTokenPositive2Rows(){
         String playerName = "Player1";
+        b.addPlayer(playerName, TerminalColrs.ANSI_CYAN);
         b.addToken(playerName, 1);
         b.addToken(playerName, 1);
         List<BoardField> expected = new LinkedList<>();
         expected.add(b.getBoardFields()[b.getNumberOfRows()-1][1]);
         expected.add(b.getBoardFields()[b.getNumberOfRows()-2][1]);
 
-        assertThat(b.getPlayerFields().keySet(), containsInAnyOrder(expected.get(0),expected.get(1)) );
+        assertThat(b.getPlayerFields().keySet(), everyItem(isIn(expected)));
     }
 
     @Test
@@ -105,6 +108,11 @@ public class BoardTest {
         boolean result = b.addToken("Player1", b.getNumberOfColumns());
         assertThat(result, equalTo(false));
     }
+    @Test(expected = IllegalArgumentException.class)
+    public void addTokenNoExistingPlayer(){
+        b.addToken("NotInGameMan", 1);
+
+    }
 
     private void fillColumn(Board b, int column){
         for(int i=0;i<b.getNumberOfRows();i++){
@@ -113,13 +121,56 @@ public class BoardTest {
     }
     @Test
     public void assertAddPlayerTokenColumnOverload(){
+        b.addPlayer("Player1",TerminalColrs.ANSI_CYAN);
         fillColumn(b, 1);
         boolean result = b.addToken("Player1", 1);
         assertThat(result, equalTo(false));
     }
 
     @Test
-    public void checkFourHorizontalNegative(){
+    public void assertAddPlayerPositive(){
+        String playerName1 = "Player1";
+        String playerName2 = "Player2";
+        String playerColor = TerminalColrs.ANSI_BLUE;
+        String player2Color = TerminalColrs.ANSI_GREEN;
+        HashMap<String, String> actual = new HashMap<>();
+        actual.put(playerName1, playerColor);
+        actual.put(playerName2, player2Color);
+
+        b.addPlayer(playerName1, playerColor);
+        b.addPlayer(playerName2, player2Color);
+        assertThat(actual.entrySet(), everyItem(isIn(b.getPlayerColors().entrySet())));
+        assertThat(actual.values(), is(containsInAnyOrder(b.getPlayerColors().values().toArray())));
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void assertAddDuplicatePlayer(){
+        b.addPlayer("Duplicate", TerminalColrs.ANSI_BLUE);
+        b.addPlayer("Duplicate", TerminalColrs.ANSI_BLUE);
+        assertThat(true, equalTo(true));
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void assertAddPlayerNoExistingColor(){
+        b.addPlayer("Player", "orange");
+    }
+
+}
+
+@RunWith(JUnitParamsRunner.class)
+class WinTest{
+
+    HashMap<String, Integer> playerMoves;
+    Board b;
+
+    @Before
+    public void setUp(){
+        playerMoves = new HashMap<>();
+        b = new Board();
+    }
+    @Test
+    @FileParameters("src/test/resources/horizontalNegative.csv")
+    public void checkFourHorizontalNegative(String player, int column){
 
     }
 
@@ -144,6 +195,6 @@ public class BoardTest {
     }
     @Test
     public void checkFourDiagonalPositive(){
-        
+
     }
 }
