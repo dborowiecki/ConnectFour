@@ -65,7 +65,8 @@ public class BoardTest {
     }
     //@Ignore
     @Test
-    public void assertGenerateEmptyBoard(){
+    @FileParameters(value = "src/test/resources/empty_board.csv")
+    public void assertGenerateEmptyBoard(String next_line){
         String expectedEmptyBoard = EMPTY_BOARD;
         Board board = new Board();
 
@@ -115,5 +116,34 @@ public class BoardTest {
         fillColumn(b, 1);
         boolean result = b.addToken("Player1", 1);
         assertThat(result, equalTo(false));
+    }
+
+    @Test
+    public void checkFourHorizontalNegative(){
+
+    }
+
+    @Test
+    public void checkFourVerticalNegative(){
+
+    }
+
+    @Test
+    public void checkFourHorizontalPositive(){
+
+    }
+
+    @Test
+    public void checkFourVerticalPositive(){
+
+    }
+
+    @Test
+    public void  checkFourDiagonalNegative(){
+
+    }
+    @Test
+    public void checkFourDiagonalPositive(){
+        
     }
 }

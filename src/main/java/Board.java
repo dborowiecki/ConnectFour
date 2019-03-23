@@ -28,13 +28,14 @@ public class Board {
 
     public boolean addToken(String player, int column){
         if(column<0||column>=numberOfColumns)
-            throw new IllegalArgumentException();
+            return false;
 
         int n=numberOfRows-1;
 
         while(n>=0){
             if(!playerFields.containsKey(boardFields[n][column])){
                 playerFields.put(boardFields[n][column], player);
+
                 return true;
             }
             n--;
@@ -55,9 +56,16 @@ public class Board {
             for(BoardField boardField : boardFields[i]){
                 buildBoard.append(
                         boardField.getBackgroundColor()+BoardField.MIDDLE_LINE+"  "+
-                                TerminalColrs.ANSI_RESET+
-                        boardField.getPlayerColor()+boardField.PLAYER_CHAR+TerminalColrs.ANSI_RESET+
-                                boardField.getBackgroundColor()+
+                                TerminalColrs.ANSI_RESET);
+
+                if(playerFields.containsKey(boardField)) {
+                    buildBoard.append(
+                            boardField.getPlayerColor() + boardField.PLAYER_CHAR + TerminalColrs.ANSI_RESET);
+                }
+                else{
+                    buildBoard.append(" ");
+                }
+                buildBoard.append(boardField.getBackgroundColor()+
                         "  "+BoardField.MIDDLE_LINE);
             }
             buildBoard.append("\n");
@@ -70,6 +78,21 @@ public class Board {
         return buildBoard.toString();
     }
 
+    public boolean checkFour(BoardField boardField){
+        return false;
+    }
+
+    private boolean checkFourHorizontal(){
+        return false;
+    }
+
+    private boolean checkFourVertical(){
+        return false;
+    }
+
+    private boolean checkFourDiagonal(){
+        return false;
+    }
     public BoardField[][] getBoardFields() {
         return boardFields;
     }
