@@ -97,7 +97,8 @@ public class BoardTest {
         expected.add(b.getBoardFields()[b.getNumberOfRows()-1][1]);
         expected.add(b.getBoardFields()[b.getNumberOfRows()-2][1]);
 
-        assertThat(b.getPlayerFields().keySet(), everyItem(isIn(expected)));
+
+        assertThat(b.getPlayerFields().keySet(), containsInAnyOrder(expected.toArray()));
     }
 
     @Test

@@ -44,8 +44,9 @@ public class Board {
             return false;
 
         int n=numberOfRows-1;
-        BoardField field = boardFields[n][column];
+        BoardField field;
         while(n>=0){
+            field = boardFields[n][column];
             if(!playerFields.containsKey(field)){
 
                 if(playerColors.containsKey(player)) {
@@ -79,7 +80,7 @@ public class Board {
 
                 if(playerFields.containsKey(boardField)) {
                     buildBoard.append(
-                            boardField.getPlayerColor() + boardField.PLAYER_CHAR + TerminalColrs.ANSI_RESET);
+                            boardField.getPlayerColor() + BoardField.PLAYER_CHAR + TerminalColrs.ANSI_RESET);
                 }
                 else{
                     buildBoard.append(" ");
