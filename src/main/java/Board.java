@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.util.HashMap;
 
 public class Board {
@@ -108,11 +107,11 @@ public class Board {
 
         if(checkFourHorizontal(x, y))return true;
         if(checkFourVertical(x, y))  return true;
-        if(checkFourDiagonal(x, y))  return true;
+      //  if(checkFourDiagonal(x, y))  return true;
         return false;
     }
 
-    private boolean checkFourHorizontal(int fieldRow, int fielColumn){
+    public boolean checkFourHorizontal(int fieldRow, int fielColumn){
         Integer firstInRow = getFirstPlayerTokenInRow(fieldRow, fielColumn);
         Integer lastInRow  = getLastPlayerTokenInRow(fieldRow, firstInRow);
 
@@ -122,7 +121,7 @@ public class Board {
             return false;
     }
 
-    private boolean checkFourVertical(int fieldRow, int fielColumn){
+    public boolean checkFourVertical(int fieldRow, int fielColumn){
         Integer firstInColumn = getFirstPlayerTokenInColumn(fieldRow, fielColumn);
         Integer lastInColumn  = getLastPlayerTokenInColumn(firstInColumn, fielColumn);
 
@@ -132,16 +131,19 @@ public class Board {
             return false;
     }
 
-    private boolean checkFourDiagonal(int fieldRow, int fielColumn){
+    public boolean checkFourDiagonal(int fieldRow, int fielColumn){
+        if(checkFirstDiagonal(fieldRow, fielColumn))
+            return true;
+        if(checkSecondDiagonal(fieldRow, fielColumn))
+            return true;
         return false;
+
     }
 
     private boolean checkColorFormat(String color){
         if(color == null|| color.length()==0) return false;
         return color.matches("\\u001B\\[[0-9]*m");
     }
-
-
 
     private Integer[] checkFieldCoordintes(BoardField b){
         int i=0;
@@ -186,15 +188,17 @@ public class Board {
         BoardField next = boardFields[firstInColumn][fielColumn];
         String player = playerFields.get(next);
 
-        while(playerFields.containsKey(next)&&playerFields.get(next).compareTo(player)==0 && firstInColumn>0) {
+        while(playerFields.containsKey(next)&&playerFields.get(next).compareTo(player)==0 && firstInColumn>=0) {
             firstInColumn--;
+            if(firstInColumn==-1) { break; }
             next = boardFields[firstInColumn][fielColumn];
         }
+        firstInColumn++;
         return firstInColumn;
     }
 
     private int getLastPlayerTokenInColumn(int fieldRow, int fielColumn){
-        int counter = 1;
+        int counter = 0;
         BoardField temp   = boardFields[fieldRow+counter][fielColumn];
         String     player = playerFields.get(temp);
 
@@ -203,6 +207,44 @@ public class Board {
             temp = boardFields[fieldRow+counter][fielColumn];
         }
         return fieldRow+counter;
+    }
+
+    private boolean checkFirstDiagonal(int fieldRow, int fielColumn){
+
+        int counter = 0;
+        BoardField next = boardFields[fieldRow][fielColumn];
+        String player = playerFields.get(next);
+        while(playerFields.containsKey(next)&&next.getPlayerColor()==player&&fieldRow>0&&fielColumn>0){
+            fieldRow -=1;
+            fielColumn -=1;
+            next = boardFields[fieldRow][fielColumn];
+        }
+
+        next = boardFields[fieldRow][fielColumn];
+
+        while(playerFields.containsKey(next)&&next.getPlayerColor()==player&&fieldRow<numberOfRows&&fielColumn<numberOfColumns){
+            next=boardFields[++fieldRow][++fielColumn];
+            counter++;
+        }
+        counter--;
+        return counter>=4;
+    }
+
+    private boolean checkSecondDiagonal(int fieldRow, int fielColumn){
+
+        int counter = 0;
+        BoardField next = boardFields[fieldRow][fielColumn];
+        String player = playerFields.get(next);
+        while(next.getPlayerColor()==player&&fieldRow>0&&fielColumn>0){
+            next = boardFields[++fieldRow][--fielColumn];
+        }
+        next = boardFields[fieldRow][fielColumn];
+        while(next.getPlayerColor()==player&&fieldRow<numberOfRows&&fielColumn<numberOfColumns){
+            next=boardFields[--fieldRow][++fielColumn];
+            counter++;
+        }
+        counter--;
+        return counter>=4;
     }
 
     public BoardField[][] getBoardFields() {
@@ -230,16 +272,5 @@ public class Board {
         else
             return false;
     }
-    //private String getUpperLine(int
-
-//    public void drawBoard(){
-//            for(int i=0;i<numberOfColumns;i++){
-//                for(int j=0;j<numberOfRows;j++){
-//                    System.out.println(SINGLEFIELD[0]);
-//                    System.out.println(SINGLEFIELD[1]);
-//                    System.out.println(SINGLEFIELD[2]);
-//                }
-//            }
-//    }
 
 }

@@ -3,6 +3,7 @@ import junitparams.JUnitParamsRunner;
 import junitparams.mappers.IdentityMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,7 +35,7 @@ public class BoardWinTest{
         for(Object[] token: tokens){
             b.addToken((String)token[0],(Integer)token[1]);
         }
-        boolean result = b.checkFour(b.getBoardFields()[5][3]);
+        boolean result = b.checkFourHorizontal(5,3);
 
         assertThat(result, is(false));
     }
@@ -47,14 +48,14 @@ public class BoardWinTest{
         for(Object[] token: tokens){
             b.addToken((String)token[0],(Integer)token[1]);
         }
-        boolean result = b.checkFour(b.getBoardFields()[4][3]);
-        boolean result1 = b.checkFour(b.getBoardFields()[3][6]);
+        boolean result = b.checkFourHorizontal(4,3);
+        boolean result1 = b.checkFourHorizontal(3,6);
 
-        System.out.println(b.getBoard());
+
         Boolean[] actual = {result, result1};
         Assertions.assertThat(actual)
                 .contains(true, true)
-                .doesNotContain(false);// contains(false, false, false));
+                .doesNotContain(false);
     }
 
     @Test
@@ -65,10 +66,10 @@ public class BoardWinTest{
         for(Object[] token: tokens){
             b.addToken((String)token[0],(Integer)token[1]);
         }
-        boolean result = b.checkFour(b.getBoardFields()[5][0]);
-        boolean result1 = b.checkFour(b.getBoardFields()[5][1]);
-        boolean result2 = b.checkFour(b.getBoardFields()[3][2]);
-        boolean result3 = b.checkFour(b.getBoardFields()[3][1]);
+        boolean result = b.checkFourVertical(5,0);
+        boolean result1 = b.checkFourVertical(5,1);
+        boolean result2 = b.checkFourVertical(3,2);
+        boolean result3 = b.checkFourVertical(3,1);
 
 
         Boolean[] actual = {result, result1,result2, result3};
@@ -86,22 +87,28 @@ public class BoardWinTest{
         for(Object[] token: tokens){
             b.addToken((String)token[0],(Integer)token[1]);
         }
-        boolean result = b.checkFour(b.getBoardFields()[5][3]);
-        boolean result1 = b.checkFour(b.getBoardFields()[4][1]);
-        boolean result2 = b.checkFour(b.getBoardFields()[2][0]);
+        boolean result = b.checkFourVertical(5,3);
+        boolean result1 = b.checkFourVertical(4,1);
+        boolean result2 = b.checkFourVertical(2,0);
 
-        System.out.println(b.getBoard());
+        
         Boolean[] actual = {result, result1, result2};
         Assertions.assertThat(actual)
                 .contains(true, true, true)
-                .doesNotContain(false);// contains(false, false, false));
+                .doesNotContain(false);
     }
 
     @Test
+    @Ignore
     public void  checkFourDiagonalNegative(){
 
     }
 
+    @Test
+    @Ignore
+    public void  checkFourDiagonalPositive(){
+
+    }
 
 
     public static class TokenMapper extends IdentityMapper {
