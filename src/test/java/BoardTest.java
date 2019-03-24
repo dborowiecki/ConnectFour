@@ -158,5 +158,20 @@ public class BoardTest {
         b.addPlayer("Player", "orange");
     }
 
+    @Test
+    public void assertCheckPlayerInGamePositive(){
+        String playerName = "Player";
+        b.addPlayer(playerName, TerminalColrs.ANSI_CYAN);
+
+        assertThat(b.hasPlayer(playerName), is(true));
+    }
+
+    @Test
+    public void assertCheckPlayerInGameNegative(){
+        String playerName = "Player";
+
+        assertThat(b.hasPlayer(playerName), is(false));
+    }
+
 }
 

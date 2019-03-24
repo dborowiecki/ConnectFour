@@ -55,7 +55,7 @@ public class Board {
                     return true;
                 }
                 else {
-                    throw new IllegalArgumentException("This player was not added to game");
+                    throw new IllegalArgumentException(player+": This player was not added to game");
                 }
             }
             n--;
@@ -106,42 +106,33 @@ public class Board {
         int x = position[0];
         int y = position[1];
 
-        if(checkFourHorizontal(boardField, x, y))return true;
-        if(checkFourVertical(boardField, x, y))  return true;
-        if(checkFourDiagonal(boardField, x, y))  return true;
+        if(checkFourHorizontal(x, y))return true;
+        if(checkFourVertical(x, y))  return true;
+        if(checkFourDiagonal(x, y))  return true;
         return false;
     }
 
-    private boolean checkFourHorizontal(BoardField boardField, int fieldRow, int fielColumn){
-        int counter=0;
-        int firstInLeft = fielColumn;
-        String player = playerFields.get(boardField);
-        BoardField next = boardFields[fieldRow][fielColumn];
-        BoardField temp;
+    private boolean checkFourHorizontal(int fieldRow, int fielColumn){
+        Integer firstInRow = getFirstPlayerTokenInRow(fieldRow, fielColumn);
+        Integer lastInRow  = getLastPlayerTokenInRow(fieldRow, firstInRow);
 
-        while(playerFields.containsKey(next)&&playerFields.get(next).compareTo(player)==0 && firstInLeft>0) {
-            firstInLeft--;
-            next = boardFields[fieldRow][firstInLeft];
-        }
-
-        temp = boardFields[fieldRow][firstInLeft];
-
-        while(playerFields.containsKey(temp)&&playerFields.get(temp).compareTo(player)==0&&fielColumn<=numberOfColumns){
-            counter++;
-            temp = boardFields[fieldRow][firstInLeft+counter];
-        }
-
-        if(counter>=4)
+        if(lastInRow-firstInRow>=4)
             return true;
         else
             return false;
     }
 
-    private boolean checkFourVertical(BoardField boardField, int fieldRow, int fielColumn){
-        return false;
+    private boolean checkFourVertical(int fieldRow, int fielColumn){
+        Integer firstInColumn = getFirstPlayerTokenInColumn(fieldRow, fielColumn);
+        Integer lastInColumn  = getLastPlayerTokenInColumn(firstInColumn, fielColumn);
+
+        if(lastInColumn-firstInColumn>=4)
+            return true;
+        else
+            return false;
     }
 
-    private boolean checkFourDiagonal(BoardField boardField, int fieldRow, int fielColumn){
+    private boolean checkFourDiagonal(int fieldRow, int fielColumn){
         return false;
     }
 
@@ -149,6 +140,9 @@ public class Board {
         if(color == null|| color.length()==0) return false;
         return color.matches("\\u001B\\[[0-9]*m");
     }
+
+
+
     private Integer[] checkFieldCoordintes(BoardField b){
         int i=0;
         int j=0;
@@ -162,6 +156,55 @@ public class Board {
         }
         return null;
     }
+
+    private int getFirstPlayerTokenInRow(int fieldRow, int fielColumn){
+        int firstInLeft = fielColumn;
+        BoardField next = boardFields[fieldRow][fielColumn];
+        String player = playerFields.get(next);
+
+        while(playerFields.containsKey(next)&&playerFields.get(next).compareTo(player)==0 && firstInLeft>0) {
+            firstInLeft--;
+            next = boardFields[fieldRow][firstInLeft];
+        }
+        return firstInLeft;
+    }
+
+    private int getLastPlayerTokenInRow(int fieldRow, int fielColumn){
+        int counter = 1;
+        BoardField temp   = boardFields[fieldRow][fielColumn+counter];
+        String     player = playerFields.get(temp);
+
+        while(playerFields.containsKey(temp)&&playerFields.get(temp).compareTo(player)==0&&(fielColumn+counter+1)<numberOfColumns){
+            counter++;
+            temp = boardFields[fieldRow][fielColumn+counter];
+        }
+        return fielColumn+counter;
+    }
+
+    private int getFirstPlayerTokenInColumn(int fieldRow, int fielColumn){
+        int firstInColumn = fieldRow;
+        BoardField next = boardFields[firstInColumn][fielColumn];
+        String player = playerFields.get(next);
+
+        while(playerFields.containsKey(next)&&playerFields.get(next).compareTo(player)==0 && firstInColumn>0) {
+            firstInColumn--;
+            next = boardFields[firstInColumn][fielColumn];
+        }
+        return firstInColumn;
+    }
+
+    private int getLastPlayerTokenInColumn(int fieldRow, int fielColumn){
+        int counter = 1;
+        BoardField temp   = boardFields[fieldRow+counter][fielColumn];
+        String     player = playerFields.get(temp);
+
+        while(playerFields.containsKey(temp)&&playerFields.get(temp).compareTo(player)==0&&(fieldRow+counter+1)<numberOfRows){
+            counter++;
+            temp = boardFields[fieldRow+counter][fielColumn];
+        }
+        return fieldRow+counter;
+    }
+
     public BoardField[][] getBoardFields() {
         return boardFields;
     }
@@ -179,6 +222,13 @@ public class Board {
 
     public HashMap<String, String> getPlayerColors() {
         return playerColors;
+    }
+
+    public boolean hasPlayer(String playername){
+        if(playerColors.containsKey(playername))
+            return true;
+        else
+            return false;
     }
     //private String getUpperLine(int
 
