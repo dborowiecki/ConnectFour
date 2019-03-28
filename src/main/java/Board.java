@@ -7,7 +7,14 @@ public class Board {
     private HashMap<BoardField, String> playerFields;
     private HashMap<String, String> playerColors;
 
-    
+    public Board(int numberOfColumns, int numberOfRows){
+        if(numberOfColumns < 1 || numberOfRows < 1){
+            throw new IllegalArgumentException("Number of columns or rows is not sufficient");
+        }
+        this.numberOfRows = numberOfRows;
+        this.numberOfColumns = numberOfColumns;
+        generateEmptyBoard();
+    }
     public Board(){
         numberOfColumns = 7;
         numberOfRows = 6;
@@ -127,25 +134,9 @@ public class Board {
         else
             return false;
     }
-
-
-
     private boolean checkColorFormat(String color){
         if(color == null|| color.length()==0) return false;
         return color.matches("\\u001B\\[[0-9]*m");
     }
 
-    private Integer[] checkFieldCoordintes(BoardField b){
-        int i=0;
-        int j=0;
-        for(i=0;i<numberOfRows;i++) {
-            for (j = 0; j < numberOfColumns; j++) {
-                if (b == boardFields[i][j]) {
-                    Integer[] position = {i, j};
-                    return position;
-                }
-            }
-        }
-        return null;
-    }
 }

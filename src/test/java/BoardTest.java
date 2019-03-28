@@ -77,7 +77,23 @@ public class BoardTest {
     }
 
     @Test
-    public void asse
+    public void assertCustomBoardSizeConstructor(){
+        int columns = 10;
+        int rows = 10;
+        Board board = new Board(columns, rows);
+        Integer[] actual = {board.getNumberOfColumns(), board.getNumberOfRows()};
+        assertThat(actual, is(arrayContaining(columns, rows)));
+    }
+
+
+    @Rule
+    public ExpectedException exceptionGrabber = ExpectedException.none();
+
+    @Test
+    public void assertIllegalBoardSize(){
+        exceptionGrabber.expect(IllegalArgumentException.class);
+        new Board(-1, -1);
+    }
 
     @Test
     public void assertAddPlayerTokenPositive(){
