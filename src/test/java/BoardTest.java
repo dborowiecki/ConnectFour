@@ -1,27 +1,14 @@
-
-import junitparams.FileParameters;
 import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import junitparams.mappers.IdentityMapper;
-import org.hamcrest.Matchers;
-import org.hamcrest.collection.IsMapContaining;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+
 import static org.hamcrest.core.Every.everyItem;
 
 
