@@ -20,56 +20,62 @@ import static org.hamcrest.Matchers.*;
 public class BoardWinTest{
 
     HashMap<String, Integer> playerMoves;
+    public final static int NUMBER_OF_REQUIRED_CONNECTIONS = 4;
     Board b;
+    ConnectionsChecker c;
 
     @Before
     public void setUp(){
         playerMoves = new HashMap<>();
         b = new Board();
+        c = new ConnectionsChecker(b);
     }
 
     @Test
     @FileParameters(value = "src/test/resources/horizontalNegative.csv", mapper = TokenMapper.class)
-    public void checkFourHorizontalNegative(List<Object[]> tokens) {
+    public void checkForHorizontalNegative(List<Object[]> tokens) {
         b.addPlayer("p1", TerminalColrs.ANSI_RED);
         for(Object[] token: tokens){
             b.addToken((String)token[0],(Integer)token[1]);
         }
-        boolean result = b.checkFourHorizontal(5,3);
+        boolean result = c.checkForHorizontal(5,3, NUMBER_OF_REQUIRED_CONNECTIONS);
 
         assertThat(result, is(false));
     }
 
     @Test
     @FileParameters(value = "src/test/resources/horizontalPositive.csv", mapper = TokenMapper.class)
-    public void checkFourHorizontalPositive(List<Object[]> tokens){
+    public void checkForHorizontalPositive(List<Object[]> tokens){
         b.addPlayer("p1", TerminalColrs.ANSI_RED);
         b.addPlayer("p2", TerminalColrs.ANSI_BLUE);
         for(Object[] token: tokens){
             b.addToken((String)token[0],(Integer)token[1]);
         }
-        boolean result = b.checkFourHorizontal(4,3);
-        boolean result1 = b.checkFourHorizontal(3,6);
+        boolean result =  c.checkForHorizontal(4,3, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result1 = c.checkForHorizontal(4,0, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result2 = c.checkForHorizontal(4,1, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result3 = c.checkForHorizontal(3,4, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result4 = c.checkForHorizontal(3,6, NUMBER_OF_REQUIRED_CONNECTIONS);
 
-
-        Boolean[] actual = {result, result1};
+        System.out.println(b.getBoard());
+        Boolean[] actual = {result, result1, result2, result3, result4};
         Assertions.assertThat(actual)
-                .contains(true, true)
+                .contains(true, true, true, true, true)
                 .doesNotContain(false);
     }
 
     @Test
     @FileParameters(value = "src/test/resources/verticalNegative.csv", mapper = TokenMapper.class)
-    public void checkFourVerticalNegative(List<Object[]> tokens){
+    public void checkForVerticalNegative(List<Object[]> tokens){
         b.addPlayer("p1", TerminalColrs.ANSI_RED);
         b.addPlayer("p2", TerminalColrs.ANSI_BLUE);
         for(Object[] token: tokens){
             b.addToken((String)token[0],(Integer)token[1]);
         }
-        boolean result = b.checkFourVertical(5,0);
-        boolean result1 = b.checkFourVertical(5,1);
-        boolean result2 = b.checkFourVertical(3,2);
-        boolean result3 = b.checkFourVertical(3,1);
+        boolean result =  c.checkForVertical(5,0,NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result1 = c.checkForVertical(5,1,NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result2 = c.checkForVertical(3,2,NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result3 = c.checkForVertical(3,1,NUMBER_OF_REQUIRED_CONNECTIONS);
 
 
         Boolean[] actual = {result, result1,result2, result3};
@@ -81,59 +87,64 @@ public class BoardWinTest{
 
     @Test
     @FileParameters(value = "src/test/resources/verticalPositive.csv", mapper = TokenMapper.class)
-    public void checkFourVerticalPositive(List<Object[]> tokens){
+    public void checkForVerticalPositive(List<Object[]> tokens){
         b.addPlayer("p1", TerminalColrs.ANSI_RED);
         b.addPlayer("p2", TerminalColrs.ANSI_BLUE);
         for(Object[] token: tokens){
             b.addToken((String)token[0],(Integer)token[1]);
         }
-        boolean result = b.checkFourVertical(5,3);
-        boolean result1 = b.checkFourVertical(4,1);
-        boolean result2 = b.checkFourVertical(2,0);
 
 
-        Boolean[] actual = {result, result1, result2};
+        System.out.println(b.getBoard());
+        boolean result1 =  c.checkForVertical(5,3,NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result2 =  c.checkForVertical(5,3,NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result3 = c.checkForVertical(4,1,NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result4 = c.checkForVertical(2,0,NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result5 = c.checkForVertical(3,0,NUMBER_OF_REQUIRED_CONNECTIONS);
+
+
+        Boolean[] actual = {result1, result2, result3, result4, result5};
         Assertions.assertThat(actual)
-                .contains(true, true, true)
+                .contains(true, true, true, true,true)
                 .doesNotContain(false);
     }
 
     @Test
     @FileParameters(value = "src/test/resources/diagonalNegative.csv", mapper = TokenMapper.class)
-    public void  checkFourDiagonalNegative(List<Object[]> tokens){
+    public void  checkForDiagonalNegative(List<Object[]> tokens){
         b.addPlayer("p1", TerminalColrs.ANSI_BLUE);
         b.addPlayer("p2", TerminalColrs.ANSI_RED);
 
         for (Object[] token: tokens){
             b.addToken((String)token[0], (Integer)token[1]);
         }
-        boolean result1 = b.checkFourDiagonal(5,0);
-        boolean result2 = b.checkFourDiagonal(4,1);
-        boolean result3 = b.checkFourDiagonal(3,2);
-        boolean result4 = b.checkFourDiagonal(2,3);
+        boolean result1 = c.checkForDiagonal(5,0, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result2 = c.checkForDiagonal(4,1, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result3 = c.checkForDiagonal(3,2, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result4 = c.checkForDiagonal(2,3, NUMBER_OF_REQUIRED_CONNECTIONS);
 
         Boolean[] actual = {result1, result2, result3, result4};
-        System.out.print(b.getBoard());
+        
         Assertions.assertThat(actual).containsExactly(false, false, false, false)
                 .doesNotContain(true);
     }
 
     @Test
     @FileParameters(value = "src/test/resources/diagonalPositive.csv", mapper = TokenMapper.class)
-    public void  checkFourDiagonalPositive(List<Object[]> tokens){
+    public void  checkForDiagonalPositive(List<Object[]> tokens){
         b.addPlayer("p1", TerminalColrs.ANSI_BLUE);
         b.addPlayer("p2", TerminalColrs.ANSI_RED);
 
         for (Object[] token: tokens){
             b.addToken((String)token[0], (Integer)token[1]);
         }
-        boolean result1 = b.checkFourDiagonal(5,0);
-        boolean result2 = b.checkFourDiagonal(4,1);
-        boolean result3 = b.checkFourDiagonal(0,0);
-        boolean result4 = b.checkFourDiagonal(0,3);
-        boolean result5 = b.checkFourDiagonal(1,1);
+        boolean result1 = c.checkForDiagonal(5,0, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result2 = c.checkForDiagonal(4,1, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result3 = c.checkForDiagonal(0,0, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result4 = c.checkForDiagonal(0,3, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result5 = c.checkForDiagonal(1,1, NUMBER_OF_REQUIRED_CONNECTIONS);
         Boolean[] actual = {result1, result2, result3, result4, result5};
-        System.out.print(b.getBoard());
+        
         Assertions.assertThat(actual).containsExactly(true, true, true, true, true)
                 .doesNotContain(false);
 
