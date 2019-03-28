@@ -3,7 +3,6 @@ import junitparams.JUnitParamsRunner;
 import junitparams.mappers.IdentityMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -13,11 +12,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
 
 @RunWith(JUnitParamsRunner.class)
-public class BoardWinTest{
+public class ChcekFourTestTest{
 
     HashMap<String, Integer> playerMoves;
     public final static int NUMBER_OF_REQUIRED_CONNECTIONS = 4;
@@ -57,7 +55,7 @@ public class BoardWinTest{
         boolean result3 = c.checkForHorizontal(3,4, NUMBER_OF_REQUIRED_CONNECTIONS);
         boolean result4 = c.checkForHorizontal(3,6, NUMBER_OF_REQUIRED_CONNECTIONS);
 
-        System.out.println(b.getBoard());
+
         Boolean[] actual = {result, result1, result2, result3, result4};
         Assertions.assertThat(actual)
                 .contains(true, true, true, true, true)
@@ -94,8 +92,6 @@ public class BoardWinTest{
             b.addToken((String)token[0],(Integer)token[1]);
         }
 
-
-        System.out.println(b.getBoard());
         boolean result1 =  c.checkForVertical(5,3,NUMBER_OF_REQUIRED_CONNECTIONS);
         boolean result2 =  c.checkForVertical(5,3,NUMBER_OF_REQUIRED_CONNECTIONS);
         boolean result3 = c.checkForVertical(4,1,NUMBER_OF_REQUIRED_CONNECTIONS);
@@ -150,6 +146,25 @@ public class BoardWinTest{
 
     }
 
+    @Test
+    @FileParameters(value = "src/test/resources/verticalNegative.csv", mapper = TokenMapper.class)
+    public void  checkFourTestNegative(List<Object[]> tokens){
+        b.addPlayer("p1", TerminalColrs.ANSI_BLUE);
+        b.addPlayer("p2", TerminalColrs.ANSI_RED);
+
+        for (Object[] token: tokens){
+            b.addToken((String)token[0], (Integer)token[1]);
+        }
+        boolean result1 = c.checkForConnectedTokens(5,0, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result2 = c.checkForConnectedTokens(4,1, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result3 = c.checkForConnectedTokens(3,2, NUMBER_OF_REQUIRED_CONNECTIONS);
+        boolean result4 = c.checkForConnectedTokens(2,3, NUMBER_OF_REQUIRED_CONNECTIONS);
+
+        Boolean[] actual = {result1, result2, result3, result4};
+
+        Assertions.assertThat(actual).containsExactly(false, false, false, false)
+                .doesNotContain(true);
+    }
 
     public static class TokenMapper extends IdentityMapper {
         @Override
