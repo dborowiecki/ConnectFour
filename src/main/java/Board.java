@@ -136,8 +136,8 @@ public class Board {
             return true;
         if(checkSecondDiagonal(fieldRow, fielColumn))
             return true;
-        return false;
 
+        return false;
     }
 
     private boolean checkColorFormat(String color){
@@ -210,40 +210,44 @@ public class Board {
     }
 
     private boolean checkFirstDiagonal(int fieldRow, int fielColumn){
-
         int counter = 0;
         BoardField next = boardFields[fieldRow][fielColumn];
         String player = playerFields.get(next);
-        while(playerFields.containsKey(next)&&next.getPlayerColor()==player&&fieldRow>0&&fielColumn>0){
-            fieldRow -=1;
-            fielColumn -=1;
-            next = boardFields[fieldRow][fielColumn];
+
+        while(playerFields.containsKey(next)&&playerFields.get(next).equals(player)&&fieldRow<numberOfRows&&fielColumn>0){
+            next = boardFields[fieldRow++][fielColumn--];
         }
 
-        next = boardFields[fieldRow][fielColumn];
+        while(fieldRow>0&&fielColumn<numberOfColumns){
+            next=boardFields[fieldRow--][fielColumn++];
 
-        while(playerFields.containsKey(next)&&next.getPlayerColor()==player&&fieldRow<numberOfRows&&fielColumn<numberOfColumns){
-            next=boardFields[++fieldRow][++fielColumn];
+            if(!(playerFields.containsKey(next)&&playerFields.get(next).equals(player)))
+                break;
+
             counter++;
         }
-        counter--;
         return counter>=4;
     }
 
     private boolean checkSecondDiagonal(int fieldRow, int fielColumn){
-
         int counter = 0;
         BoardField next = boardFields[fieldRow][fielColumn];
         String player = playerFields.get(next);
-        while(next.getPlayerColor()==player&&fieldRow>0&&fielColumn>0){
-            next = boardFields[++fieldRow][--fielColumn];
+
+
+        while(playerFields.containsKey(next)&&playerFields.get(next).equals(player)&&fieldRow>0&&fielColumn>0){
+            next = boardFields[fieldRow--][fielColumn--];
         }
-        next = boardFields[fieldRow][fielColumn];
-        while(next.getPlayerColor()==player&&fieldRow<numberOfRows&&fielColumn<numberOfColumns){
-            next=boardFields[--fieldRow][++fielColumn];
+
+
+        while(fieldRow<numberOfRows&&fielColumn<numberOfColumns){
+            next=boardFields[fieldRow++][fielColumn++];
+
+            if(!(playerFields.containsKey(next)&&playerFields.get(next).equals(player)))
+                break;
             counter++;
         }
-        counter--;
+
         return counter>=4;
     }
 
