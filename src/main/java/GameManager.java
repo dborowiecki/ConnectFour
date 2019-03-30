@@ -34,14 +34,18 @@ public class GameManager {
 
     public void addPlayers(){
         Scanner sc = new Scanner(System.in);
+        int j=0;
         for(int i=0; i<NUMBER_OF_PLYERS;i++){
-          //  try {
+            try {
                 addPlayer(sc);
-//            }
-//            catch (Exception e){
-//                System.out.println("Error while adding player: "+e.getMessage());
-//                //i--;
-//            }
+            }
+            catch (Exception e){
+                System.out.println("Error while adding player: "+e.getMessage());
+                System.out.println("Do you want to try again? Y/n");
+                String def = sc.nextLine();
+                if(def.toLowerCase().contains("y"))
+                   i--;
+            }
         }
 
     }

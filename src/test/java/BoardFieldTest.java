@@ -13,9 +13,9 @@ import static org.hamcrest.core.Every.everyItem;
 
 public class BoardFieldTest {
 
-    static final String UPPERLINE =  " ◸   ◹";
+    static final String UPPERLINE =  " ◸   ◹ ";
     static final String MIDDLE_LINE = "|";
-    static final String LOWERLINE =  " ◺   ◿";
+    static final String LOWERLINE =  " ◺   ◿ ";
     static final String USER_CHAR = "●";
 
     BoardField b = new BoardField();

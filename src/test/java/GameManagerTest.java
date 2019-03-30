@@ -82,6 +82,28 @@ public class GameManagerTest {
         Assertions.assertThat(gm).extracting(GameManager::getBoard).isEqualToComparingFieldByFieldRecursively(b);
 
     }
+
+    @Test
+    @Parameters({"janusz,kolor\nn,karol,blue, Color KOLOR not handled",
+            "p1,blue,p1,red\nn, Player with this name alredy exists"})
+    public void addPlayersTestNegative(String p1, String p1Color,String p2,String p2Color, String errMsg){
+
+        createSetUp();
+        //Catch output
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
+        //Generate input
+        String inputStream = createInputStream(new String[]{p1, p1Color, p2, p2Color});
+        ByteArrayInputStream in = new ByteArrayInputStream(inputStream.getBytes());
+        System.setIn(in);
+
+        //Create board
+        gm.addPlayers();
+        String out = myOut.toString();
+        Assertions.assertThat(out).contains(errMsg);
+
+    }
+
     private int getBoardSize(Board b){
        return  b.getBoardFields().length*b.getBoardFields()[0].length;
     }
@@ -101,5 +123,5 @@ public class GameManagerTest {
         }
         return build.toString();
     }
-    
+
 }
