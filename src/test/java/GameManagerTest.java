@@ -1,9 +1,14 @@
 import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+import org.assertj.core.api.Assertions;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -27,6 +32,7 @@ public class GameManagerTest {
     @After
     public void teardown(){
         System.setIn(System.in);
+        System.setOut(System.out);
         gm = null;
 
     }
@@ -53,7 +59,47 @@ public class GameManagerTest {
         assertThat(boardSize, equalTo(12*8));
     }
 
+    @Test
+    @Parameters({"janusz,red,karol,blue",
+            "player1,purple,player2,yellow",
+            "ja,blue,ty,red"})
+    public void addPlayersTestPositive(String p1, String p1Color,String p2,String p2Color){
+        createSetUp();
+        //Catch output
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
+        //Generate input
+        String inputStream = createInputStream(new String[]{p1, p1Color, p2, p2Color});
+        ByteArrayInputStream in = new ByteArrayInputStream(inputStream.getBytes());
+        System.setIn(in);
+        //Create board to compare
+        Board b = new Board();
+        b.addPlayer(p1, TerminalColrs.translateColor(p1Color));
+        b.addPlayer(p2, TerminalColrs.translateColor(p2Color));
+        //Create board
+        gm.addPlayers();
+
+        Assertions.assertThat(gm).extracting(GameManager::getBoard).isEqualToComparingFieldByFieldRecursively(b);
+
+    }
     private int getBoardSize(Board b){
        return  b.getBoardFields().length*b.getBoardFields()[0].length;
     }
+
+    private void createSetUp(){
+        ByteArrayInputStream in = new ByteArrayInputStream("Y\n".getBytes());
+        System.setIn(in);
+        gm.setUpGame();
+        System.setIn(System.in);
+    }
+
+    private String createInputStream(String[] values){
+        StringBuilder build = new StringBuilder();
+        for(String value: values){
+            build.append(value);
+            build.append("\n");
+        }
+        return build.toString();
+    }
+    
 }

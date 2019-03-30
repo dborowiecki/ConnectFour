@@ -14,4 +14,17 @@ public class TerminalColrs{
     public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
     public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
+
+
+    public static String translateColor(String stringFormatColor){
+        stringFormatColor = stringFormatColor.toUpperCase();
+        switch (stringFormatColor) {
+            case "RED": return TerminalColrs.ANSI_RED;
+            case "GREEN": return TerminalColrs.ANSI_GREEN;
+            case "BLUE": return TerminalColrs.ANSI_BLUE;
+            case "YELLOW": return TerminalColrs.ANSI_YELLOW;
+            case "PURPLE": return TerminalColrs.ANSI_PURPLE;
+            default: throw new IllegalArgumentException("Color "+stringFormatColor+" not handled");
+        }
+    }
 }
