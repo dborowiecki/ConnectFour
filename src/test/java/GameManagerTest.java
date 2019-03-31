@@ -223,7 +223,6 @@ public class GameManagerTest {
 
         //Generate input
         String filling = createInputStream((String[])token);
-        System.out.println(createInputStream((String[])token));
         ByteArrayInputStream in;
         in = new ByteArrayInputStream(filling.getBytes());
         System.setIn(in);
@@ -231,7 +230,26 @@ public class GameManagerTest {
         Assertions.assertThat(myOut.toString()).contains("IT'S A DRAW, THANKS FOR PLAYING");
     }
 
+    @Test
+    public void startGameTest(){
+        //Catch output
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
 
+        //Create board
+        createSetUp();
+        addPlayers();
+
+        //Generate input
+        String filling = createInputStream(new String[]{"2", "1"});
+        ByteArrayInputStream in;
+        in = new ByteArrayInputStream(filling.getBytes());
+        System.setIn(in);
+        gm.startGame();
+        //Check if this calls both methods from start
+        Assertions.assertThat(myOut.toString()).contains("PLAYER-WIN-DRAW-LOST")
+                .contains("Default board size? (Y/n)");
+    }
 
 
     private int getBoardSize(Board b){

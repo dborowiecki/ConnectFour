@@ -17,7 +17,7 @@ public class TerminalColrs{
 
 
     public static String translateColor(String stringFormatColor){
-        stringFormatColor = stringFormatColor.toUpperCase();
+        stringFormatColor = stringFormatColor.toUpperCase().replaceAll("\\s+","");
         switch (stringFormatColor) {
             case "RED": return TerminalColrs.ANSI_RED;
             case "GREEN": return TerminalColrs.ANSI_GREEN;

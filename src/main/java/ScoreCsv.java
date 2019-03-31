@@ -18,9 +18,14 @@ public class ScoreCsv {
         csvFile = path;
     }
 
-    public void addScore(String player, int result) throws IllegalArgumentException{
-        try {
-            FileWriter fileWriter = new FileWriter(csvFile, true);
+    public void addScore(String player, int result){
+        FileWriter fileWriter = null;
+        try{
+            fileWriter = new FileWriter(csvFile, true);
+            }
+        catch (Exception e){
+            e.printStackTrace();
+        }
             PrintWriter printWriter = new PrintWriter(fileWriter);
 
             switch (result){
@@ -31,13 +36,12 @@ public class ScoreCsv {
                 case -1: printWriter.print(player+LOSE+"\n");
                     break;
                 default:
+                    printWriter.close();
                     throw new IllegalArgumentException("Result "+result+" cant be handled, use -1, 0 or 1 instead");
             }
             printWriter.close();
-        }
-        catch(Exception ex) {
-            System.out.println("Error with saving match result");
-        }
+
+
     }
 
     public String readLeaderBoard(){

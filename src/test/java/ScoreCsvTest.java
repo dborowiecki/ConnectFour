@@ -47,7 +47,7 @@ public class ScoreCsvTest {
     public void writeToFileExceptionCatchTest(){
         sc = new ScoreCsv(CSV_WRITE_TEST_FILE);
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> sc.addScore("player", -2));
+                .isThrownBy(() -> sc.addScore("p1", -42));
     }
 
     private void cleanFile(String file){

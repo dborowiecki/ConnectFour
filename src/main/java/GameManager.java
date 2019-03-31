@@ -17,9 +17,26 @@ public class GameManager {
         //addPlayers();
     }
     public void startGame(){
-        setUpGame();
-        addPlayers();
-        runGame();
+        Scanner sc = new Scanner(System.in);
+        printMenu();
+        String action;
+
+        boolean correctAction = false;
+        do{
+            action = sc.nextLine();
+            if(action.length()>0)
+                if(action.charAt(0)=='1'||action.charAt(0)=='2')
+                    correctAction=true;
+        }
+                while (!correctAction);
+
+        if (action.charAt(0) == '2')
+            showLeaderboard();
+        if(action.charAt(0) == '1') {
+            setUpGame();
+            addPlayers();
+            runGame();
+        }
     }
 
     public void setUpGame(){
@@ -95,8 +112,10 @@ public class GameManager {
         String line = "-";
         while(!line.startsWith("s")) {
             printBoardInterface(player, column);
+            do {
+                line = in.nextLine().toLowerCase();
+            } while(!(line.length()>0));
 
-            line = in.nextLine().toLowerCase();
             switch (line.charAt(0)){
                 case 'a': column = column > 0 ? column - 1 : column;
                 break;
@@ -198,9 +217,16 @@ public class GameManager {
     private String getInstructions(){
         return ("D - token to right\n" +
                 "A - token to left" +
-                "S - drop to column"+
-                "Z - return last move");
+                "S - drop to column "+
+                "Z - return last move ");
     }
+
+    private void printMenu(){
+        System.out.println("ACTIONS:\n"+
+                "1. Play new game\n"+
+                "2. Show leaderboard");
+    }
+
     private void addPlayer(Scanner sc){
         System.out.println("Player name: ");
         String pName = sc.nextLine();
@@ -213,13 +239,31 @@ public class GameManager {
         playersMoveOrder.add(pName);
         b.addPlayer(pName, asciiFormatColor);
     }
+
+
     private void printDraw(){
         System.out.flush();
         System.out.println("IT'S A DRAW, THANKS FOR PLAYING");
 
+        saveDraw();
     }
-    private void saveScore(String playerName){
 
+    private void saveScore(String playerName){
+        ScoreCsv sc = new ScoreCsv("leadboard.csv");
+        sc.addScore(playerName, 1);
+        for(String player:playersMoveOrder)
+            if(!player.equals(playerName))
+                sc.addScore(player, -1);
+
+    }
+    private void saveDraw(){
+        ScoreCsv sc = new ScoreCsv("leadboard.csv");
+        for(String player: playersMoveOrder)
+            sc.addScore(player, 0);
+    }
+    private void showLeaderboard(){
+        ScoreCsv sc = new ScoreCsv("leadboard.csv");
+        System.out.println(sc.readLeaderBoard());
     }
     public Board getBoard(){
         return b;
