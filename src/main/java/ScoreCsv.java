@@ -8,41 +8,41 @@ import java.util.Scanner;
 
 
 public class ScoreCsv {
-    public static String WIN  = ";1;0;0";
-    public static String DRAW = ";0;1;0";
-    public static String LOSE = ";0;0;1";
+    public static String WIN  = ",1,0,0";
+    public static String DRAW = ",0,1,0";
+    public static String LOSE = ",0,0,1";
 
     String csvFile;
-    String separator = ";";
+    String separator = ",";
     public ScoreCsv(String path){
         csvFile = path;
     }
 
-    public void addScore(String player, int result){
+    public void addScore(String player, int result) throws IllegalArgumentException{
         try {
-            FileWriter fileWriter = new FileWriter(csvFile);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            FileWriter fileWriter = new FileWriter(csvFile, true);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
 
             switch (result){
-                case 0: bufferedWriter.write(player+DRAW);
+                case 0:  printWriter.print(player+DRAW+"\n");
                 break;
-                case 1: bufferedWriter.write(player+WIN);
+                case 1:  printWriter.print(player+WIN+"\n");
                     break;
-                case -1: bufferedWriter.write(player+LOSE);
+                case -1: printWriter.print(player+LOSE+"\n");
                     break;
                 default:
-                    throw new IllegalArgumentException("Result "+result+" cant be handled");
+                    throw new IllegalArgumentException("Result "+result+" cant be handled, use -1, 0 or 1 instead");
             }
-
-            bufferedWriter.close();
+            printWriter.close();
         }
-        catch(IOException ex) {
+        catch(Exception ex) {
             System.out.println("Error with saving match result");
         }
     }
 
-    public void readLeaderBoard(){
+    public String readLeaderBoard(){
         HashMap<String, Integer[]> playersResult = new HashMap<>();
+        StringBuilder builder = new StringBuilder("PLAYER-WIN-DRAW-LOST\n");
         String line = "";
         try {
             FileReader fileReader = new FileReader(csvFile);
@@ -56,8 +56,13 @@ public class ScoreCsv {
                 Integer draw= Integer.parseInt(choped[2]);
                 Integer lose= Integer.parseInt(choped[3]);
 
-                if(!playersResult.containsKey(choped[0]))
-                    playersResult.put(player, new Integer[3]);
+                if(!playersResult.containsKey(choped[0])) {
+                    Integer[] playerRes = new Integer[3];
+                    playerRes[0] = 0;
+                    playerRes[1] = 0;
+                    playerRes[2] = 0;
+                    playersResult.put(player, playerRes);
+                }
 
                 Integer[] playerScore = playersResult.get(player);
                 playerScore[0]+=win;
@@ -67,15 +72,18 @@ public class ScoreCsv {
             System.out.println("PLAYER-WIN-DRAW-LOST");
             for(String player:playersResult.keySet()){
                 Integer[] r = playersResult.get(player);
-                System.out.println(player+" "+r[0]+" "+r[1]+" "+r[2]);
+                builder.append(player).append(" ")
+                        .append(r[0]).append(" ")
+                        .append(r[1]).append(" ")
+                        .append(r[2]).append("\n");
             }
             // Always close files.
             bufferedReader.close();
         }
         catch(Exception e) {
-            System.out.println("Error while reading leaderboard");
+            System.out.println("Something went wrong with reading leaderboard");
         }
-
+        return builder.toString();
     }
 
 }
