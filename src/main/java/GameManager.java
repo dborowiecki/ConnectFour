@@ -2,18 +2,22 @@
 import java.util.*;
 
 public class GameManager {
-    Board b;
+    private Board b;
     private int NUMBER_OF_PLYERS = 2;
-    HashMap<String, String> playerColors;
-    List<String> playersMoveOrder;
-    List<Integer> movesList;
-    Scanner sc;
+    private HashMap<String, String> playerColors;
+    private List<String> playersMoveOrder;
+    private List<Integer> movesList;
+    private Scanner sc;
+    private int numberOfFields;
 
     public GameManager(){
         //setUpGame();
         //addPlayers();
     }
     public void startGame(){
+        setUpGame();
+        addPlayers();
+        runGame();
 
     }
 
@@ -35,6 +39,7 @@ public class GameManager {
         movesList = new ArrayList<>();
         playerColors  = new HashMap<>();
         playersMoveOrder = new LinkedList<>();
+        numberOfFields = b.getNumberOfColumns()*b.getNumberOfRows();
     }
 
     public void addPlayers(){
@@ -60,22 +65,11 @@ public class GameManager {
         }
 
     }
-    private void addPlayer(Scanner sc){
+    public void runGame(){
+        int i = 0;
+        boolean end = false;
 
-
-
-        System.out.println("Player name: ");
-        String pName = sc.nextLine();
-
-        System.out.println("Player color: ");
-        String pColor = sc.nextLine();
-        String asciiFormatColor = TerminalColrs.translateColor(pColor);
-
-        playerColors.put(pName,asciiFormatColor);
-        playersMoveOrder.add(pName);
-        b.addPlayer(pName, asciiFormatColor);
     }
-
     public void makeMove(String player, Scanner in) {
         int column = 0;
 
@@ -91,7 +85,7 @@ public class GameManager {
                     break;
                 case 'z': turnBackMove(player, in);
                     break;
-                case 's': putToken(player, column);
+                case 's': if(!putToken(player, column)) line = "-";
                     break;
             }
         }
@@ -113,9 +107,16 @@ public class GameManager {
 
     }
 
-    private void putToken(String player, int column){
-        b.addToken(player, column);
-        movesList.add(column);
+    private boolean putToken(String player, int column){
+        boolean success = b.addToken(player, column);
+        if(!success) {
+            System.out.println("You can't put token in this column!");
+            return false;
+        }
+        else {
+            movesList.add(column);
+            return true;
+        }
     }
 
     private void turnBackMove(String currentPlayer, Scanner in){
@@ -159,6 +160,18 @@ public class GameManager {
                 "A - token to left" +
                 "S - drop to column"+
                 "Z - return last move");
+    }
+    private void addPlayer(Scanner sc){
+        System.out.println("Player name: ");
+        String pName = sc.nextLine();
+
+        System.out.println("Player color: ");
+        String pColor = sc.nextLine();
+        String asciiFormatColor = TerminalColrs.translateColor(pColor);
+
+        playerColors.put(pName,asciiFormatColor);
+        playersMoveOrder.add(pName);
+        b.addPlayer(pName, asciiFormatColor);
     }
     public Board getBoard(){
         return b;

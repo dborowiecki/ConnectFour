@@ -162,7 +162,25 @@ public class GameManagerTest {
         Assertions.assertThat(boardFields).containsKeys(expectedField).doesNotContainKeys(shouldBeEmpty);
     }
 
+    @Test
+    public void putTokenColumnOverload(){
+        //Catch output
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
 
+        //Create board
+        createSetUp();
+        addPlayers();
+
+        //Generate input
+        fillFirstColumn();
+        String overloading = createInputStream(new String[]{"s", "d", "s"});
+        ByteArrayInputStream in;
+        in = new ByteArrayInputStream(overloading.getBytes());
+        gm.makeMove("p1", new Scanner(in));
+
+        Assertions.assertThat(myOut.toString()).contains("You can't put token in this column");
+    }
     private int getBoardSize(Board b){
        return  b.getBoardFields().length*b.getBoardFields()[0].length;
     }
@@ -186,6 +204,16 @@ public class GameManagerTest {
             build.append("\n");
         }
         return build.toString();
+    }
+
+    private void fillFirstColumn(){
+        String beforeTurnBack = createInputStream(new String[]{"s"});
+        ByteArrayInputStream in;
+        for(int i=0; i<gm.getBoard().getNumberOfRows();i++) {
+            in = new ByteArrayInputStream(beforeTurnBack.getBytes());
+            System.setIn(in);
+            gm.makeMove("p1", new Scanner(in));
+        }
     }
 
 }
