@@ -16,4 +16,5 @@ dependencies {
     testImplementation 'org.hamcrest:hamcrest:2.1'
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
     testCompile("org.assertj:assertj-core:3.11.1")
+    compile group: 'com.opencsv', name: 'opencsv', version: '4.1'
 }

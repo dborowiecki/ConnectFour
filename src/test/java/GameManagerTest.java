@@ -230,6 +230,10 @@ public class GameManagerTest {
         gm.runGame();
         Assertions.assertThat(myOut.toString()).contains("IT'S A DRAW, THANKS FOR PLAYING");
     }
+
+
+
+
     private int getBoardSize(Board b){
        return  b.getBoardFields().length*b.getBoardFields()[0].length;
     }
