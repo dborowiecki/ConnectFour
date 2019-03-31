@@ -104,6 +104,38 @@ public class GameManagerTest {
 
     }
 
+    @Test
+    @Parameters(method = "MovesParams")
+    public void makePlayerMoveToRightAndLeftTest(String[] moves){
+        //Catch output
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
+
+        //Create board
+        createSetUp();
+        addPlayers();
+
+        //Generate input
+        String inputStream = createInputStream(moves);
+        ByteArrayInputStream in = new ByteArrayInputStream(inputStream.getBytes());
+        System.setIn(in);
+
+        gm.makeMove("p1");
+
+        int expectedColumn = Integer.parseInt(moves[moves.length-1]);
+        BoardField expectedField = gm.getBoard().getField(5,expectedColumn);
+        String actualFieldOwner  = gm.getBoard().getPlayerFields().get(expectedField);
+
+        Assertions.assertThat(actualFieldOwner).isEqualTo("p1");
+    }
+    private Object[] MovesParams() {
+        Object[] l = new Object[3];
+        l[0]=(new String[]{"d", "d","d","d", "d", "d", "d", "d", "s", "6"});
+        l[1]=(new String[]{"d","d","d","d","d","a","a","a","a","a","a","s", "0"});
+        l[2]=(new String[]{"d","d", "d", "a", "d","d","d","a","s", "4"});
+        return l;
+    }
+
     private int getBoardSize(Board b){
        return  b.getBoardFields().length*b.getBoardFields()[0].length;
     }
@@ -114,7 +146,12 @@ public class GameManagerTest {
         gm.setUpGame();
         System.setIn(System.in);
     }
-
+    private void addPlayers(){
+        ByteArrayInputStream in = new ByteArrayInputStream("p1\nred\np2\nblue\n".getBytes());
+        System.setIn(in);
+        gm.addPlayers();
+        System.setIn(System.in);
+    }
     private String createInputStream(String[] values){
         StringBuilder build = new StringBuilder();
         for(String value: values){

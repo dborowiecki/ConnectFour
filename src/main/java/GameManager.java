@@ -1,11 +1,17 @@
 
-import java.util.List;
-import java.util.Scanner;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
 
 public class GameManager {
     Board b;
     private int NUMBER_OF_PLYERS = 2;
-    List<String> players;
+    HashMap<String, String> playerColors;
+    List<String> playersMoveOrder;
+    List<Integer> movesList;
 
     public GameManager(){
         //setUpGame();
@@ -17,11 +23,12 @@ public class GameManager {
 
     public void setUpGame(){
         Scanner keyboard = new Scanner(System.in);
-        System.out.print("hello");
+        System.out.print("HELLO!\n");
         System.out.print("Default board size? (Y/n)");
         String def = keyboard.nextLine();
-        if(def.toLowerCase().contains("y"))
+        if(def.toLowerCase().contains("y")) {
             b = new Board();
+        }
         else {
             System.out.print("Number of rows: ");
             int numberOfRows = keyboard.nextInt();
@@ -29,11 +36,19 @@ public class GameManager {
             int numberOfColumns = keyboard.nextInt();
             b = new Board(numberOfColumns, numberOfRows);
         }
-
+        movesList = new ArrayList<>();
+        playerColors  = new HashMap<>();
+        playersMoveOrder = new LinkedList<>();
     }
 
     public void addPlayers(){
         Scanner sc = new Scanner(System.in);
+        System.out.println("Available colors:\n"+
+                TerminalColrs.ANSI_BLUE   +"BLUE, "  +
+                TerminalColrs.ANSI_RED    +"RED, "   +
+                TerminalColrs.ANSI_GREEN  +"GREEN, " +
+                TerminalColrs.ANSI_PURPLE +"PURPLE, "+
+                TerminalColrs.ANSI_YELLOW +"YELLOW"+TerminalColrs.ANSI_RESET);
         int j=0;
         for(int i=0; i<NUMBER_OF_PLYERS;i++){
             try {
@@ -51,12 +66,7 @@ public class GameManager {
     }
     private void addPlayer(Scanner sc){
 
-        System.out.println("Available colors:\n"+
-                TerminalColrs.ANSI_BLUE   +"BLUE"  +TerminalColrs.ANSI_RESET+"\n"+
-                TerminalColrs.ANSI_RED    +"RED"   +TerminalColrs.ANSI_RESET+"\n"+
-                TerminalColrs.ANSI_GREEN  +"GREEN" +TerminalColrs.ANSI_RESET+"\n"+
-                TerminalColrs.ANSI_PURPLE +"PURPLE"+TerminalColrs.ANSI_RESET+"\n"+
-                TerminalColrs.ANSI_YELLOW +"YELLOW"+TerminalColrs.ANSI_RESET);
+
 
         System.out.println("Player name: ");
         String pName = sc.nextLine();
@@ -64,14 +74,53 @@ public class GameManager {
         System.out.println("Player color: ");
         String pColor = sc.nextLine();
         String asciiFormatColor = TerminalColrs.translateColor(pColor);
+
+        playerColors.put(pName,asciiFormatColor);
+        playersMoveOrder.add(pName);
         b.addPlayer(pName, asciiFormatColor);
     }
 
-    public void addPlayersToBoard(){
+    public void makeMove(String player) {
+        int move = 0;
 
-    }
+        Scanner in = new Scanner(new InputStreamReader(System.in));
+        String line = "";
+        while(!line.startsWith("s")) {
+            System.out.println("PLAYER: "+player);
+            System.out.println(getDecidingLine(player, move));
+            System.out.println(b.getBoard());
+            System.out.println(
+                            "D - token to right " +
+                            "A - token to left "  +
+                            "S - drop to column " +
+                            "Z - return last move ");
+            line = in.nextLine().toLowerCase();
+            if (line.startsWith("a")) {
+                move = move > 0 ? move - 1 : move;
+            }
+            if (line.startsWith("d"))
+                move = move >= getBoard().getNumberOfColumns()-1 ? move : move+1;
+            if (line.startsWith("z")) {
+                removeLastMove();
+                String previousPlayer = "";
+                Integer playerWithRemovedMove = playersMoveOrder.indexOf(player);
+                if(playerWithRemovedMove==0)
+                    previousPlayer = playersMoveOrder.get(playersMoveOrder.size()-1);
+                else
+                    if(playerWithRemovedMove==(playersMoveOrder.size()-1))
+                        previousPlayer = playersMoveOrder.get(0);
+                    else
+                        previousPlayer = playersMoveOrder.get(playersMoveOrder.indexOf(player)-1);
 
-    public void makeMove(){
+
+                makeMove(previousPlayer);
+            }
+            if(line.startsWith("s")){
+                b.addToken(player, move);
+                movesList.add(move);
+                return;
+            }
+        }
 
     }
 
@@ -79,6 +128,34 @@ public class GameManager {
 
     }
 
+    public void removeLastMove(){
+        int lastIndex = movesList.size()-1;
+        if(movesList.isEmpty())
+            return;
+        Integer lastMove = movesList.get(lastIndex);
+
+        boolean success = b.removeTokenFromColumn(lastMove);
+        if(success)
+            movesList = movesList.subList(0, lastIndex-1);
+
+    }
+
+    public String getDecidingLine(String player, int column){
+        StringBuilder build = new StringBuilder("   ");
+        for(int i=0;i<column;i++)
+            build.append("       ");
+
+        build.append(playerColors.get(player)+BoardField.PLAYER_CHAR+TerminalColrs.ANSI_RESET);
+
+        return build.toString();
+    }
+
+    public String getInstructions(){
+        return ("D - token to right\n" +
+                "A - token to left" +
+                "S - drop to column"+
+                "Z - return last move");
+    }
     public Board getBoard(){
         return b;
     }
