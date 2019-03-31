@@ -137,10 +137,10 @@ public class ConnectionsChecker {
         BoardField next = board.getField(fieldRow,fielColumn);
         String player = playerFields.get(next);
 
-        while(playerFields.containsKey(next)&&playerFields.get(next).equals(player)&&fieldRow<board.getNumberOfRows()&&fielColumn>0){
+        while(playerFields.containsKey(next)&&playerFields.get(next).equals(player)&&fieldRow<board.getNumberOfRows()-1&&fielColumn>0){
             next = board.getField(fieldRow++,fielColumn--);
         }
-
+        System.out.println(fieldRow+" "+fielColumn);
         while(fieldRow>0&&fielColumn<board.getNumberOfColumns()){
             next=board.getField(fieldRow--,fielColumn++);
 

@@ -181,6 +181,31 @@ public class GameManagerTest {
 
         Assertions.assertThat(myOut.toString()).contains("You can't put token in this column");
     }
+
+    @Test
+    public void getWinnerTest(){
+        //Catch output
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
+
+        //Create board
+        createSetUp();
+        addPlayers();
+
+        //Generate input
+        String overloading = createInputStream(new String[]{"s"});
+        ByteArrayInputStream in;
+
+        for(int i=0;i<gm.CONNECTED_FOR_WIN;i++) {
+            in = new ByteArrayInputStream(overloading.getBytes());
+            gm.makeMove("p1", new Scanner(in));
+        }
+        in = new ByteArrayInputStream(overloading.getBytes());
+        boolean foundWinner = gm.makeMove("p1", new Scanner(in));
+
+        assertThat(foundWinner, equalTo(true));
+    }
+
     private int getBoardSize(Board b){
        return  b.getBoardFields().length*b.getBoardFields()[0].length;
     }

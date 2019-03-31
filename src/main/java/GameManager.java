@@ -3,7 +3,9 @@ import java.util.*;
 
 public class GameManager {
     private Board b;
+    private ConnectionsChecker connectionsChecker;
     private int NUMBER_OF_PLYERS = 2;
+    public static final int CONNECTED_FOR_WIN = 4;
     private HashMap<String, String> playerColors;
     private List<String> playersMoveOrder;
     private List<Integer> movesList;
@@ -36,6 +38,7 @@ public class GameManager {
             int numberOfColumns = sc.nextInt();
             b = new Board(numberOfColumns, numberOfRows);
         }
+        connectionsChecker = new ConnectionsChecker(b);
         movesList = new ArrayList<>();
         playerColors  = new HashMap<>();
         playersMoveOrder = new LinkedList<>();
@@ -70,7 +73,8 @@ public class GameManager {
         boolean end = false;
 
     }
-    public void makeMove(String player, Scanner in) {
+
+    public boolean makeMove(String player, Scanner in) {
         int column = 0;
 
         String line = "-";
@@ -89,10 +93,28 @@ public class GameManager {
                     break;
             }
         }
+
+       boolean win = checkWin(column);
+        if(win){
+            announceWinner(player);
+            return true;
+        }
+        return false;
     }
 
-    public void updateBoard(){
-
+    private boolean checkWin(int lastColumnInput){
+        int row = 0;
+        boolean isEmpty = true;
+        while(isEmpty&&row<b.getNumberOfRows()-1){
+            BoardField nextField = b.getField(row, lastColumnInput);
+            isEmpty = !b.getPlayerFields().containsKey(nextField);
+            row++;
+        }
+        System.out.println(row+" "+ lastColumnInput);
+        return connectionsChecker.checkForConnectedTokens(row, lastColumnInput, CONNECTED_FOR_WIN);
+    }
+    private void announceWinner(String playerName){
+        System.out.println("WiNeR");
     }
 
     public void removeLastMove(){
