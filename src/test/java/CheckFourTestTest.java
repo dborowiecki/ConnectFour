@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @RunWith(JUnitParamsRunner.class)
-public class ChcekFourTestTest{
+public class CheckFourTestTest{
 
     HashMap<String, Integer> playerMoves;
     public final static int NUMBER_OF_REQUIRED_CONNECTIONS = 4;
