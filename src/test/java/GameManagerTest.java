@@ -1,5 +1,7 @@
+import junitparams.FileParameters;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import junitparams.mappers.IdentityMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -7,6 +9,8 @@ import org.junit.runner.RunWith;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.Reader;
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static org.hamcrest.MatcherAssert.*;
@@ -206,6 +210,26 @@ public class GameManagerTest {
         assertThat(foundWinner, equalTo(true));
     }
 
+    @Test
+    @FileParameters(value = "src/test/resources/fillDrawBoard.csv", mapper = GameManagerTest.TokenMapper.class)
+    public void makeDrawTest(Object[] token){
+        //Catch output
+       final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+       System.setOut(new PrintStream(myOut));
+
+        //Create board
+        createSetUp();
+        addPlayers();
+
+        //Generate input
+        String filling = createInputStream((String[])token);
+        System.out.println(createInputStream((String[])token));
+        ByteArrayInputStream in;
+        in = new ByteArrayInputStream(filling.getBytes());
+        System.setIn(in);
+        gm.runGame();
+        Assertions.assertThat(myOut.toString()).contains("IT'S A DRAW, THANKS FOR PLAYING");
+    }
     private int getBoardSize(Board b){
        return  b.getBoardFields().length*b.getBoardFields()[0].length;
     }
@@ -238,6 +262,24 @@ public class GameManagerTest {
             in = new ByteArrayInputStream(beforeTurnBack.getBytes());
             System.setIn(in);
             gm.makeMove("p1", new Scanner(in));
+        }
+    }
+
+    public static class TokenMapper extends IdentityMapper {
+        @Override
+        public Object[] map(Reader reader) {
+            Object[] map = super.map(reader);
+            List<String> movesSum = new LinkedList<>();
+            for (Object lineObj : map) {
+                String line = lineObj.toString();
+                int index = line.indexOf(",");
+                String columnStr = line.substring(index + 1);
+                String[] moves = columnStr.split(";");
+
+                movesSum.addAll(Arrays.asList(moves));
+            }
+            Object[] out = {movesSum.toArray()};
+            return out;
         }
     }
 

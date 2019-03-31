@@ -20,7 +20,6 @@ public class GameManager {
         setUpGame();
         addPlayers();
         runGame();
-
     }
 
     public void setUpGame(){
@@ -70,11 +69,27 @@ public class GameManager {
     }
     public void runGame(){
         int i = 0;
-        boolean end = false;
+        Scanner sc = new Scanner(System.in);
+        while(true){
+            String playerMove = playersMoveOrder.get(i%NUMBER_OF_PLYERS);
 
+            boolean win = makeMove(playerMove, sc);
+            i++;
+            boolean draw = (i == numberOfFields);
+            if(win){
+                saveScore(playerMove);
+                break;
+            }
+            if(draw){
+                printDraw();
+                break;
+            }
+        }
+        sc.close();
     }
 
     public boolean makeMove(String player, Scanner in) {
+        System.out.flush();
         int column = 0;
 
         String line = "-";
@@ -104,17 +119,20 @@ public class GameManager {
 
     private boolean checkWin(int lastColumnInput){
         int row = 0;
-        boolean isEmpty = true;
-        while(isEmpty&&row<b.getNumberOfRows()-1){
+        boolean isEmpty;
+        isEmpty = !b.getPlayerFields().containsKey(b.getField(row, lastColumnInput));
+        while(isEmpty){
+            row++;
             BoardField nextField = b.getField(row, lastColumnInput);
             isEmpty = !b.getPlayerFields().containsKey(nextField);
-            row++;
         }
         System.out.println(row+" "+ lastColumnInput);
         return connectionsChecker.checkForConnectedTokens(row, lastColumnInput, CONNECTED_FOR_WIN);
     }
     private void announceWinner(String playerName){
-        System.out.println("WiNeR");
+        System.out.flush();
+        System.out.println(b.getBoard());
+        System.out.println(playerColors.get(playerName)+"PLAYER "+playerName+" WON!");
     }
 
     public void removeLastMove(){
@@ -194,6 +212,14 @@ public class GameManager {
         playerColors.put(pName,asciiFormatColor);
         playersMoveOrder.add(pName);
         b.addPlayer(pName, asciiFormatColor);
+    }
+    private void printDraw(){
+        System.out.flush();
+        System.out.println("IT'S A DRAW, THANKS FOR PLAYING");
+
+    }
+    private void saveScore(String playerName){
+
     }
     public Board getBoard(){
         return b;
