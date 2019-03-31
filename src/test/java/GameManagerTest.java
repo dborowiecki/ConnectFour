@@ -2,21 +2,16 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.assertj.core.api.Assertions;
 import org.junit.*;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import static org.hamcrest.core.Every.everyItem;
 
 
 
@@ -120,7 +115,7 @@ public class GameManagerTest {
         ByteArrayInputStream in = new ByteArrayInputStream(inputStream.getBytes());
         System.setIn(in);
 
-        gm.makeMove("p1");
+        gm.makeMove("p1", new Scanner(in));
 
         int expectedColumn = Integer.parseInt(moves[moves.length-1]);
         BoardField expectedField = gm.getBoard().getField(5,expectedColumn);
@@ -135,6 +130,38 @@ public class GameManagerTest {
         l[2]=(new String[]{"d","d", "d", "a", "d","d","d","a","s", "4"});
         return l;
     }
+
+    @Test
+    public void turnBackMoveTest(){
+        //Catch output
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
+
+        //Create board
+        createSetUp();
+        addPlayers();
+
+        //Generate input
+        String beforeTurnBack = createInputStream(new String[]{"d", "d","d","s"});
+        String afterTurnBack = createInputStream(new String[]{"z","d","s","s"});
+        ByteArrayInputStream in;
+
+        in = new ByteArrayInputStream(beforeTurnBack.getBytes());
+        System.setIn(in);
+        gm.makeMove("p1", new Scanner(in));
+        in = new ByteArrayInputStream(afterTurnBack.getBytes());
+        System.setIn(in);
+        gm.makeMove("p2", new Scanner(in));
+
+        int expectedNotPresentColumn =2;
+        int expectedColumn = 1;
+        HashMap<BoardField, String > boardFields = gm.getBoard().getPlayerFields();
+        BoardField expectedField = gm.getBoard().getField(5,expectedColumn);
+        BoardField shouldBeEmpty = gm.getBoard().getField(5, expectedNotPresentColumn);
+
+        Assertions.assertThat(boardFields).containsKeys(expectedField).doesNotContainKeys(shouldBeEmpty);
+    }
+
 
     private int getBoardSize(Board b){
        return  b.getBoardFields().length*b.getBoardFields()[0].length;

@@ -12,6 +12,7 @@ public class GameManager {
     HashMap<String, String> playerColors;
     List<String> playersMoveOrder;
     List<Integer> movesList;
+    Scanner sc;
 
     public GameManager(){
         //setUpGame();
@@ -22,18 +23,18 @@ public class GameManager {
     }
 
     public void setUpGame(){
-        Scanner keyboard = new Scanner(System.in);
+        sc = new Scanner(System.in);
         System.out.print("HELLO!\n");
         System.out.print("Default board size? (Y/n)");
-        String def = keyboard.nextLine();
+        String def = sc.nextLine();
         if(def.toLowerCase().contains("y")) {
             b = new Board();
         }
         else {
             System.out.print("Number of rows: ");
-            int numberOfRows = keyboard.nextInt();
+            int numberOfRows = sc.nextInt();
             System.out.print("Number of columns: ");
-            int numberOfColumns = keyboard.nextInt();
+            int numberOfColumns = sc.nextInt();
             b = new Board(numberOfColumns, numberOfRows);
         }
         movesList = new ArrayList<>();
@@ -80,10 +81,10 @@ public class GameManager {
         b.addPlayer(pName, asciiFormatColor);
     }
 
-    public void makeMove(String player) {
+    public void makeMove(String player, Scanner in) {
         int move = 0;
 
-        Scanner in = new Scanner(new InputStreamReader(System.in));
+        //Scanner in = new Scanner(new InputStreamReader(System.in));
         String line = "";
         while(!line.startsWith("s")) {
             System.out.println("PLAYER: "+player);
@@ -113,7 +114,7 @@ public class GameManager {
                         previousPlayer = playersMoveOrder.get(playersMoveOrder.indexOf(player)-1);
 
 
-                makeMove(previousPlayer);
+                makeMove(previousPlayer, in);
             }
             if(line.startsWith("s")){
                 b.addToken(player, move);
@@ -136,7 +137,7 @@ public class GameManager {
 
         boolean success = b.removeTokenFromColumn(lastMove);
         if(success)
-            movesList = movesList.subList(0, lastIndex-1);
+            movesList = movesList.subList(0, lastIndex);
 
     }
 
