@@ -1,14 +1,15 @@
 import junitparams.JUnitParamsRunner;
+import junitparams.NamedParameters;
+import org.assertj.core.api.Assertions;
+import junitparams.Parameters;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-
 import static org.hamcrest.core.Every.everyItem;
 
 
@@ -177,6 +178,41 @@ public class BoardTest {
         String playerName = "Player";
 
         assertThat(b.hasPlayer(playerName), is(false));
+    }
+
+
+    private Object[] IntParams() {
+        Object[] l = new Object[3];
+        l[0]=(new Integer[]{1,2,3,4,5});
+        l[1]=(new Integer[]{1,1,1,1,1});
+        l[2]=(new Integer[]{1,2,2,1,2});
+        return l;
+    }
+
+    @Test
+    @Parameters(method = "IntParams")
+    public void removeTokenPositive(Integer[] tokens){
+        String playerName = "p1";
+        b.addPlayer(playerName, TerminalColrs.ANSI_RED);
+        for(Integer i: tokens)
+            b.addToken("p1", i);
+
+        for(Integer i: tokens)
+            b.removeTokenFromColumn(i);
+
+        assertThat(b.getPlayerFields().keySet().isEmpty(), equalTo(true));
+    }
+
+    @Test
+    @Parameters(method = "IntParams")
+    public void removeTokenNegative(Integer[] tokens){
+        String playerName = "p1";
+        b.addPlayer(playerName, TerminalColrs.ANSI_RED);
+        List<Boolean> results = new LinkedList<>();
+        for(Integer i: tokens)
+            results.add(b.removeTokenFromColumn(i));
+
+       Assertions.assertThat(results).doesNotContain(true).containsOnly(false);
     }
 
 }

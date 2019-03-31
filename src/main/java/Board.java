@@ -65,6 +65,18 @@ public class Board {
         return false;
     }
 
+    public boolean removeTokenFromColumn(Integer column){
+        int i = 0;
+        while(i < numberOfRows){
+            BoardField bf = boardFields[i][column];
+            if(playerFields.containsKey(bf)){
+                playerFields.remove(bf);
+                return true;
+            }
+            i++;
+        }
+        return false;
+    }
     public String getBoard(){
         StringBuilder buildBoard = new StringBuilder();
 
