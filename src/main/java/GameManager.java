@@ -1,9 +1,4 @@
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
 
 public class GameManager {
@@ -82,47 +77,24 @@ public class GameManager {
     }
 
     public void makeMove(String player, Scanner in) {
-        int move = 0;
+        int column = 0;
 
-        //Scanner in = new Scanner(new InputStreamReader(System.in));
-        String line = "";
+        String line = "-";
         while(!line.startsWith("s")) {
-            System.out.println("PLAYER: "+player);
-            System.out.println(getDecidingLine(player, move));
-            System.out.println(b.getBoard());
-            System.out.println(
-                            "D - token to right " +
-                            "A - token to left "  +
-                            "S - drop to column " +
-                            "Z - return last move ");
+            printBoardInterface(player, column);
+
             line = in.nextLine().toLowerCase();
-            if (line.startsWith("a")) {
-                move = move > 0 ? move - 1 : move;
-            }
-            if (line.startsWith("d"))
-                move = move >= getBoard().getNumberOfColumns()-1 ? move : move+1;
-            if (line.startsWith("z")) {
-                removeLastMove();
-                String previousPlayer = "";
-                Integer playerWithRemovedMove = playersMoveOrder.indexOf(player);
-                if(playerWithRemovedMove==0)
-                    previousPlayer = playersMoveOrder.get(playersMoveOrder.size()-1);
-                else
-                    if(playerWithRemovedMove==(playersMoveOrder.size()-1))
-                        previousPlayer = playersMoveOrder.get(0);
-                    else
-                        previousPlayer = playersMoveOrder.get(playersMoveOrder.indexOf(player)-1);
-
-
-                makeMove(previousPlayer, in);
-            }
-            if(line.startsWith("s")){
-                b.addToken(player, move);
-                movesList.add(move);
-                return;
+            switch (line.charAt(0)){
+                case 'a': column = column > 0 ? column - 1 : column;
+                break;
+                case 'd': column = column >= getBoard().getNumberOfColumns()-1 ? column : column+1;
+                    break;
+                case 'z': turnBackMove(player, in);
+                    break;
+                case 's': putToken(player, column);
+                    break;
             }
         }
-
     }
 
     public void updateBoard(){
@@ -141,7 +113,28 @@ public class GameManager {
 
     }
 
-    public String getDecidingLine(String player, int column){
+    private void putToken(String player, int column){
+        b.addToken(player, column);
+        movesList.add(column);
+    }
+
+    private void turnBackMove(String currentPlayer, Scanner in){
+        removeLastMove();
+        String previousPlayer = "";
+        Integer playerWithRemovedMove = playersMoveOrder.indexOf(currentPlayer);
+        if(playerWithRemovedMove==0)
+            previousPlayer = playersMoveOrder.get(playersMoveOrder.size()-1);
+        else
+        if(playerWithRemovedMove==(playersMoveOrder.size()-1))
+            previousPlayer = playersMoveOrder.get(0);
+        else
+            previousPlayer = playersMoveOrder.get(playersMoveOrder.indexOf(currentPlayer)-1);
+
+
+        makeMove(previousPlayer, in);
+    }
+
+    private String getDecidingLine(String player, int column){
         StringBuilder build = new StringBuilder("   ");
         for(int i=0;i<column;i++)
             build.append("       ");
@@ -151,7 +144,17 @@ public class GameManager {
         return build.toString();
     }
 
-    public String getInstructions(){
+    private void printBoardInterface(String player, int move){
+        System.out.println("PLAYER: "+player);
+        System.out.println(getDecidingLine(player, move));
+        System.out.println(b.getBoard());
+        printInsructions();
+    }
+
+    private void printInsructions(){
+        System.out.println(getInstructions());
+    }
+    private String getInstructions(){
         return ("D - token to right\n" +
                 "A - token to left" +
                 "S - drop to column"+
