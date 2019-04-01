@@ -57,11 +57,9 @@ public class GameManager implements Serializable {
                 GameManager game = (GameManager) inputStream.readObject();
                 game.sc = new Scanner(System.in);
                 return game;
-            } catch (FileNotFoundException e){
-                System.out.println("Sorry, cant load this save, named "+saveName);
-            } catch (Exception e){
-                System.out.println("Some unknown error appeared, stack trace: ");
-                e.printStackTrace();
+            }
+            catch (Exception e){
+                System.out.println("Sorry, cannot load file: "+saveName);
                 System.out.println("Want to try again? (Y/n)");
                 do {
                     saveName = sc.nextLine().toLowerCase();
@@ -70,7 +68,7 @@ public class GameManager implements Serializable {
                     continueReading = false;
             }
         }
-        System.out.println("Save corrupted, started new game");
+        System.out.println("Could not read file");
         sc.close();
         return null;
     }

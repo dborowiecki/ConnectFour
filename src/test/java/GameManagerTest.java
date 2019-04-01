@@ -293,6 +293,18 @@ public class GameManagerTest {
     }
 
     @Test
+    public void loadFileCatchException(){
+        //Catch output
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
+
+        String filling = createInputStream(new String[]{"notFile","y", "notFile2", "n"});
+        ByteArrayInputStream in = new ByteArrayInputStream(filling.getBytes());
+        System.setIn(in);
+        GameManager gm = GameManager.loadGame();
+        Assertions.assertThat(gm).isNull();
+    }
+    @Test
     public void startGameTest(){
         //Catch output
         final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
