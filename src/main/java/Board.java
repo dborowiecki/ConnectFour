@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Board {
+public class Board implements Serializable {
     private int numberOfColumns;
     private int numberOfRows;
     private BoardField[][] boardFields;

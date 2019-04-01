@@ -1,10 +1,11 @@
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class ConnectionsChecker {
+public class ConnectionsChecker  implements Serializable{
     Board board;
     HashMap<BoardField, String> playerFields;
 
-    public ConnectionsChecker(Board board){
+    public ConnectionsChecker(Board board) {
         this.board=board;
         this.playerFields = board.getPlayerFields();
     }

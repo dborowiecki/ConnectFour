@@ -1,7 +1,8 @@
-
+import java.beans.Transient;
+import java.io.*;
 import java.util.*;
 
-public class GameManager {
+public class GameManager implements Serializable {
     private Board b;
     private ConnectionsChecker connectionsChecker;
     private int NUMBER_OF_PLYERS = 2;
@@ -9,13 +10,12 @@ public class GameManager {
     private HashMap<String, String> playerColors;
     private List<String> playersMoveOrder;
     private List<Integer> movesList;
-    private Scanner sc;
+
+    private transient Scanner sc;
     private int numberOfFields;
 
-    public GameManager(){
-        //setUpGame();
-        //addPlayers();
-    }
+
+    @Transient
     public void startGame(){
         Scanner sc = new Scanner(System.in);
         printMenu();
@@ -30,6 +30,8 @@ public class GameManager {
         }
                 while (!correctAction);
 
+        if (action.charAt(0) == '3')
+            showLeaderboard();
         if (action.charAt(0) == '2')
             showLeaderboard();
         if(action.charAt(0) == '1') {
@@ -37,6 +39,39 @@ public class GameManager {
             addPlayers();
             runGame();
         }
+    }
+
+    public static GameManager loadGame(){
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Save name: ");
+        String saveName;
+        boolean continueReading = true;
+        while(continueReading) {
+            do {
+                saveName = sc.nextLine().toLowerCase();
+            } while (!(saveName.length() > 0));
+
+            try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(saveName))) {
+                GameManager game = (GameManager) inputStream.readObject();
+                game.sc = new Scanner(System.in);
+                return game;
+            } catch (FileNotFoundException e){
+                System.out.println("Sorry, cant load this save, named "+saveName);
+            } catch (Exception e){
+                System.out.println("Some unknown error appeared, stack trace: ");
+                e.printStackTrace();
+                System.out.println("Want to try again? (Y/n)");
+                do {
+                    saveName = sc.nextLine().toLowerCase();
+                } while (!(saveName.length() > 0));
+                if(saveName.toUpperCase().charAt(0)!='Y')
+                    continueReading = false;
+            }
+        }
+        System.out.println("Save corrupted, started new game");
+        sc.close();
+        return null;
     }
 
     public void setUpGame(){
@@ -84,6 +119,7 @@ public class GameManager {
         }
 
     }
+    @Transient
     public void runGame(){
         int i = 0;
         Scanner sc = new Scanner(System.in);
@@ -105,6 +141,7 @@ public class GameManager {
         sc.close();
     }
 
+    @Transient
     public boolean makeMove(String player, Scanner in) {
         System.out.flush();
         int column = 0;
@@ -124,6 +161,8 @@ public class GameManager {
                 case 'z': turnBackMove(player, in);
                     break;
                 case 's': if(!putToken(player, column)) line = "-";
+                    break;
+                case 'o': if(saveGame(in)) System.out.println("Game saved!");
                     break;
             }
         }
@@ -214,11 +253,13 @@ public class GameManager {
     private void printInsructions(){
         System.out.println(getInstructions());
     }
+
     private String getInstructions(){
         return ("D - token to right\n" +
                 "A - token to left" +
                 "S - drop to column "+
-                "Z - return last move ");
+                "Z - return last move "+
+                "o - save game");
     }
 
     private void printMenu(){
@@ -256,14 +297,35 @@ public class GameManager {
                 sc.addScore(player, -1);
 
     }
+
     private void saveDraw(){
         ScoreCsv sc = new ScoreCsv("leadboard.csv");
         for(String player: playersMoveOrder)
             sc.addScore(player, 0);
     }
+
     private void showLeaderboard(){
         ScoreCsv sc = new ScoreCsv("leadboard.csv");
         System.out.println(sc.readLeaderBoard());
+    }
+
+    @Transient
+    private boolean saveGame(Scanner sc){
+        System.out.println("Name for next save: ");
+        String saveName;
+        do {
+            saveName = sc.nextLine().toLowerCase();
+        } while(!(saveName.length()>0));
+
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(saveName))) {
+            outputStream.writeObject(this);
+            outputStream.close();
+            return true;
+        } catch (Exception e){
+            System.out.println("Something went wrong with saving file, error message:\n");
+            e.printStackTrace();
+            return false;
+        }
     }
     public Board getBoard(){
         return b;

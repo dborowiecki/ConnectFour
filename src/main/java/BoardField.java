@@ -1,4 +1,6 @@
-public class BoardField{
+import java.io.Serializable;
+
+public class BoardField implements Serializable {
     public static final String UPPERLINE   =  " ◸   ◹ ";
     public static final String MIDDLE_LINE =  "|";
     public static final String LOWERLINE   =  " ◺   ◿ ";
