@@ -18,9 +18,9 @@ public class GameManager implements Serializable {
 
     @Transient
     public void startGame(){
+        setLeadboard("leadboard.csv");
         Scanner sc = new Scanner(System.in);
         printMenu();
-        setLeadboard("leadboard.csv");
         String action;
 
         boolean correctAction = false;
@@ -32,8 +32,6 @@ public class GameManager implements Serializable {
         }
                 while (!correctAction);
 
-        if (action.charAt(0) == '3')
-            showLeaderboard();
         if (action.charAt(0) == '2')
             showLeaderboard();
         if(action.charAt(0) == '1') {
@@ -43,10 +41,11 @@ public class GameManager implements Serializable {
         }
     }
 
+
     public static GameManager loadGame(){
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Save name: ");
+        System.out.println("Save path: ");
         String saveName;
         boolean continueReading = true;
         while(continueReading) {
@@ -306,20 +305,16 @@ public class GameManager implements Serializable {
             sc.addScore(player, 0);
     }
 
-    private void showLeaderboard(){
-        ScoreCsv sc = new ScoreCsv(leadboard);
-        System.out.println(sc.readLeaderBoard());
-    }
-
     @Transient
     private boolean saveGame(Scanner sc){
         System.out.println("Name for next save: ");
         String saveName;
+
         do {
             saveName = sc.nextLine().toLowerCase();
         } while(!(saveName.length()>0));
-
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(saveName))) {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(
+                new FileOutputStream(saveName))) {
             outputStream.writeObject(this);
             outputStream.close();
             return true;
@@ -329,9 +324,16 @@ public class GameManager implements Serializable {
             return false;
         }
     }
+
+    private void showLeaderboard(){
+        ScoreCsv sc = new ScoreCsv(leadboard);
+        System.out.println(sc.readLeaderBoard());
+    }
+
     public Board getBoard(){
         return b;
     }
+
     public void setLeadboard(String path){
         leadboard = path;
     }

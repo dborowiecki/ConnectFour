@@ -20,6 +20,7 @@ public class GameManagerTest {
 
     GameManager gm;
     public static final String TEST_LEADBOARD_PATH = "src/test/leadboard.csv";
+    public static final String SAVES_FILE_NAME = "save1.test";
     @Before
     public void setUp(){
         gm = new GameManager();
@@ -30,12 +31,13 @@ public class GameManagerTest {
         System.setIn(System.in);
         System.setOut(System.out);
         gm = null;
-        cleanLeadboard();
+        cleanFiles();
     }
 
-    private void cleanLeadboard() {
+    private void cleanFiles() {
         try {
             new FileWriter(TEST_LEADBOARD_PATH);
+            new FileWriter(SAVES_FILE_NAME);
         } catch (Exception e){
             System.out.println("Error with leadboard test file");
         }
@@ -257,21 +259,37 @@ public class GameManagerTest {
         Assertions.assertThat(fileContent).contains("p1,1,0,0").contains("p2,0,0,1");
     }
 
-    private String readFromLeadboard() {
-        String output = "";
-        String nextLine;
+    @Test
+    @FileParameters(value = "src/test/resources/savingGameTest.txt", mapper = GameManagerTest.TokenMapper.class)
+    public void savingGameTest(Object[] token){
+        //Catch output
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
+
+        //Create board
+        createSetUp();
+        addPlayers();
+
+        //Generate input
+        String filling = createInputStream((String[])token);
+        ByteArrayInputStream in;
+        in = new ByteArrayInputStream(filling.getBytes());
+        System.setIn(in);
+
         try {
-            FileReader fileReader = new FileReader(TEST_LEADBOARD_PATH);
-
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            while ((nextLine = bufferedReader.readLine()) != null) {
-                output+=nextLine;
-            }
+            gm.runGame();
         } catch (Exception e){
-            System.out.println("Error while reading leadboard");
+            //catching end of user input error
         }
-        return output;
+
+        String savePath = SAVES_FILE_NAME;
+        in = new ByteArrayInputStream(savePath.getBytes());
+        System.setIn(in);
+        GameManager savedGame = GameManager.loadGame();
+        Assertions.assertThat(savedGame)
+                .usingRecursiveComparison()
+                .ignoringFields("sc")
+                .isEqualTo(gm);
     }
 
     @Test
@@ -330,7 +348,22 @@ public class GameManagerTest {
             gm.makeMove("p1", new Scanner(in));
         }
     }
+    private String readFromLeadboard() {
+        String output = "";
+        String nextLine;
+        try {
+            FileReader fileReader = new FileReader(TEST_LEADBOARD_PATH);
 
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            while ((nextLine = bufferedReader.readLine()) != null) {
+                output+=nextLine;
+            }
+        } catch (Exception e){
+            System.out.println("Error while reading leadboard");
+        }
+        return output;
+    }
     public static class TokenMapper extends IdentityMapper {
         @Override
         public Object[] map(Reader reader) {
