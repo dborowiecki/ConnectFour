@@ -3,14 +3,15 @@ import java.io.*;
 import java.util.*;
 
 public class GameManager implements Serializable {
-    private Board b;
-    private ConnectionsChecker connectionsChecker;
-    private int NUMBER_OF_PLYERS = 2;
     public static final int CONNECTED_FOR_WIN = 4;
+    public static final int NUMBER_OF_PLYERS = 2;
+    
+    private Board b;
+    private String leadboard;
+    private ConnectionsChecker connectionsChecker;
     private HashMap<String, String> playerColors;
     private List<String> playersMoveOrder;
     private List<Integer> movesList;
-
     private transient Scanner sc;
     private int numberOfFields;
 
@@ -19,6 +20,7 @@ public class GameManager implements Serializable {
     public void startGame(){
         Scanner sc = new Scanner(System.in);
         printMenu();
+        setLeadboard("leadboard.csv");
         String action;
 
         boolean correctAction = false;
@@ -290,7 +292,7 @@ public class GameManager implements Serializable {
     }
 
     private void saveScore(String playerName){
-        ScoreCsv sc = new ScoreCsv("leadboard.csv");
+        ScoreCsv sc = new ScoreCsv(leadboard);
         sc.addScore(playerName, 1);
         for(String player:playersMoveOrder)
             if(!player.equals(playerName))
@@ -299,13 +301,13 @@ public class GameManager implements Serializable {
     }
 
     private void saveDraw(){
-        ScoreCsv sc = new ScoreCsv("leadboard.csv");
+        ScoreCsv sc = new ScoreCsv(leadboard);
         for(String player: playersMoveOrder)
             sc.addScore(player, 0);
     }
 
     private void showLeaderboard(){
-        ScoreCsv sc = new ScoreCsv("leadboard.csv");
+        ScoreCsv sc = new ScoreCsv(leadboard);
         System.out.println(sc.readLeaderBoard());
     }
 
@@ -329,5 +331,8 @@ public class GameManager implements Serializable {
     }
     public Board getBoard(){
         return b;
+    }
+    public void setLeadboard(String path){
+        leadboard = path;
     }
 }

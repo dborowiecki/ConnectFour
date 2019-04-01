@@ -6,11 +6,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.*;
 import org.junit.runner.RunWith;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.Reader;
-import java.lang.reflect.Array;
+import java.io.*;
 import java.util.*;
 
 import static org.hamcrest.MatcherAssert.*;
@@ -23,17 +19,26 @@ import static org.hamcrest.Matchers.*;
 public class GameManagerTest {
 
     GameManager gm;
-
+    public static final String TEST_LEADBOARD_PATH = "src/test/leadboard.csv";
     @Before
     public void setUp(){
         gm = new GameManager();
+        gm.setLeadboard(TEST_LEADBOARD_PATH);
     }
     @After
     public void teardown(){
         System.setIn(System.in);
         System.setOut(System.out);
         gm = null;
+        cleanLeadboard();
+    }
 
+    private void cleanLeadboard() {
+        try {
+            new FileWriter(TEST_LEADBOARD_PATH);
+        } catch (Exception e){
+            System.out.println("Error with leadboard test file");
+        }
     }
 
     @Test
@@ -228,6 +233,45 @@ public class GameManagerTest {
         System.setIn(in);
         gm.runGame();
         Assertions.assertThat(myOut.toString()).contains("IT'S A DRAW, THANKS FOR PLAYING");
+    }
+
+    @Test
+    @FileParameters(value = "src/test/resources/fillWinBoard.csv", mapper = GameManagerTest.TokenMapper.class)
+    public void saveWinnerLoserToLeadBoardTest(Object[] token){
+        //Catch output
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
+
+        //Create board
+        createSetUp();
+        addPlayers();
+
+        //Generate input
+        String filling = createInputStream((String[])token);
+        ByteArrayInputStream in;
+        in = new ByteArrayInputStream(filling.getBytes());
+        System.setIn(in);
+        gm.runGame();
+
+        String fileContent = readFromLeadboard();
+        Assertions.assertThat(fileContent).contains("p1,1,0,0").contains("p2,0,0,1");
+    }
+
+    private String readFromLeadboard() {
+        String output = "";
+        String nextLine;
+        try {
+            FileReader fileReader = new FileReader(TEST_LEADBOARD_PATH);
+
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            while ((nextLine = bufferedReader.readLine()) != null) {
+                output+=nextLine;
+            }
+        } catch (Exception e){
+            System.out.println("Error while reading leadboard");
+        }
+        return output;
     }
 
     @Test

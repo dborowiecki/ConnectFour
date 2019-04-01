@@ -5,11 +5,12 @@ public class TerminalColorTest {
 
     @Test
     public void properTestCalls(){
-        String[] expected = {TerminalColrs.ANSI_RED,
-                TerminalColrs.ANSI_GREEN,
-                TerminalColrs.ANSI_BLUE,
-                TerminalColrs.ANSI_YELLOW,
-                TerminalColrs.ANSI_PURPLE};
+        String[] expected = {
+                             TerminalColrs.ANSI_RED,
+                             TerminalColrs.ANSI_GREEN,
+                             TerminalColrs.ANSI_BLUE,
+                             TerminalColrs.ANSI_YELLOW,
+                             TerminalColrs.ANSI_PURPLE};
         String[] actual = {
                 TerminalColrs.translateColor("RED     "),
                 TerminalColrs.translateColor("GREEN   "),
