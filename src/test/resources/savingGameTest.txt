@@ -2,4 +2,4 @@ p1,s
 p2,d;s
 p1,s
 p2,d;s
-p1,o;save1.test
+p1,o;src/test/save1.test

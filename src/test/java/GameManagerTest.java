@@ -20,7 +20,7 @@ public class GameManagerTest {
 
     GameManager gm;
     public static final String TEST_LEADBOARD_PATH = "src/test/leadboard.csv";
-    public static final String SAVES_FILE_NAME = "save1.test";
+    public static final String SAVES_FILE_NAME = "src/test/save1.test";
     @Before
     public void setUp(){
         gm = new GameManager();

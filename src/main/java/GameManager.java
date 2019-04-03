@@ -18,25 +18,9 @@ public class GameManager implements Serializable {
 
     @Transient
     public void startGame(){
-        setLeadboard("leadboard.csv");
-        Scanner sc = new Scanner(System.in);
-        printMenu();
-        String action;
-
-        boolean correctAction = false;
-        do{
-            action = sc.nextLine();
-            if(action.length()>0)
-                if(action.charAt(0)=='1')
-                    correctAction=true;
-        }
-                while (!correctAction);
-
-        if(action.charAt(0) == '1') {
-            setUpGame();
-            addPlayers();
-            runGame();
-        }
+        setUpGame();
+        addPlayers();
+        runGame();
     }
 
 
@@ -84,6 +68,9 @@ public class GameManager implements Serializable {
             int numberOfColumns = sc.nextInt();
             b = new Board(numberOfColumns, numberOfRows);
         }
+        if(leadboard==null)
+         setLeadboard("leadboard.csv");
+
         connectionsChecker = new ConnectionsChecker(b);
         movesList = new ArrayList<>();
         playerColors  = new HashMap<>();
@@ -315,16 +302,6 @@ public class GameManager implements Serializable {
                 "o - save game");
     }
 
-    private void printMenu(){
-        System.out.println("ACTIONS:\n"+
-                "1. Play new game\n"+
-                "2. Show leaderboard");
-    }
-
-    private void showLeaderboard(){
-        ScoreCsv sc = new ScoreCsv(leadboard);
-        System.out.println(sc.readLeaderBoard());
-    }
 
     public Board getBoard(){
         return b;
