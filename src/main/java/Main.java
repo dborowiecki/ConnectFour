@@ -31,6 +31,7 @@ public class Main {
                     readScores(LEADBOARD_PATH);
                     break;
                 case '4':
+                    System.out.println("Bye");
                     next = false;
                     break;
 
