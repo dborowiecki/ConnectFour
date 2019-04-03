@@ -16,6 +16,7 @@ public class Board implements Serializable {
         this.numberOfColumns = numberOfColumns;
         generateEmptyBoard();
     }
+
     public Board(){
         numberOfColumns = 7;
         numberOfRows = 6;

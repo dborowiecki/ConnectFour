@@ -73,7 +73,6 @@ public class ScoreCsv {
                 playerScore[1]+=draw;
                 playerScore[2]+=lose;
             }
-            System.out.println("PLAYER-WIN-DRAW-LOST");
             for(String player:playersResult.keySet()){
                 Integer[] r = playersResult.get(player);
                 builder.append(player).append(" ")
@@ -81,11 +80,14 @@ public class ScoreCsv {
                         .append(r[1]).append(" ")
                         .append(r[2]).append("\n");
             }
-            // Always close files.
             bufferedReader.close();
+        }
+        catch (FileNotFoundException f){
+            System.out.println("Leadboard is empty");
         }
         catch(Exception e) {
             System.out.println("Something went wrong with reading leaderboard");
+            e.printStackTrace();
         }
         return builder.toString();
     }

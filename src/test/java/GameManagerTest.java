@@ -315,14 +315,14 @@ public class GameManagerTest {
         addPlayers();
 
         //Generate input
-        String filling = createInputStream(new String[]{"2", "1"});
+        String filling = createInputStream(new String[]{"1"});
         ByteArrayInputStream in;
         in = new ByteArrayInputStream(filling.getBytes());
         System.setIn(in);
-        gm.startGame();
+        try{gm.startGame();} catch (NoSuchElementException ignored){}
+
         //Check if this calls both methods from start
-        Assertions.assertThat(myOut.toString()).contains("PLAYER-WIN-DRAW-LOST")
-                .contains("Default board size? (Y/n)");
+        Assertions.assertThat(myOut.toString()).contains("Default board size? (Y/n)");
     }
 
 
@@ -360,6 +360,7 @@ public class GameManagerTest {
             gm.makeMove("p1", new Scanner(in));
         }
     }
+
     private String readFromLeadboard() {
         String output = "";
         String nextLine;
@@ -376,6 +377,8 @@ public class GameManagerTest {
         }
         return output;
     }
+
+
     public static class TokenMapper extends IdentityMapper {
         @Override
         public Object[] map(Reader reader) {

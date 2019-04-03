@@ -27,13 +27,11 @@ public class GameManager implements Serializable {
         do{
             action = sc.nextLine();
             if(action.length()>0)
-                if(action.charAt(0)=='1'||action.charAt(0)=='2')
+                if(action.charAt(0)=='1')
                     correctAction=true;
         }
                 while (!correctAction);
 
-        if (action.charAt(0) == '2')
-            showLeaderboard();
         if(action.charAt(0) == '1') {
             setUpGame();
             addPlayers();
@@ -44,11 +42,11 @@ public class GameManager implements Serializable {
 
     public static GameManager loadGame(){
         Scanner sc = new Scanner(System.in);
-
-        System.out.println("Save path: ");
         String saveName;
         boolean continueReading = true;
+
         while(continueReading) {
+            System.out.println("Save path: ");
             do {
                 saveName = sc.nextLine().toLowerCase();
             } while (!(saveName.length() > 0));
@@ -69,13 +67,11 @@ public class GameManager implements Serializable {
             }
         }
         System.out.println("Could not read file");
-        sc.close();
         return null;
     }
 
     public void setUpGame(){
         sc = new Scanner(System.in);
-        System.out.print("HELLO!\n");
         System.out.print("Default board size? (Y/n)");
         String def = sc.nextLine();
         if(def.toLowerCase().contains("y")) {
@@ -97,12 +93,14 @@ public class GameManager implements Serializable {
 
     public void addPlayers(){
         Scanner sc = new Scanner(System.in);
+
         System.out.println("Available colors:\n"+
                 TerminalColrs.ANSI_BLUE   +"BLUE, "  +
                 TerminalColrs.ANSI_RED    +"RED, "   +
                 TerminalColrs.ANSI_GREEN  +"GREEN, " +
                 TerminalColrs.ANSI_PURPLE +"PURPLE, "+
                 TerminalColrs.ANSI_YELLOW +"YELLOW"+TerminalColrs.ANSI_RESET);
+
         int j=0;
         for(int i=0; i<NUMBER_OF_PLYERS;i++){
             try {
@@ -174,6 +172,18 @@ public class GameManager implements Serializable {
         return false;
     }
 
+    public void removeLastMove(){
+        if(movesList.isEmpty())
+            return;
+
+        int lastIndex = movesList.size()-1;
+        Integer lastMove = movesList.get(lastIndex);
+        boolean success = b.removeTokenFromColumn(lastMove);
+
+        if(success)
+            movesList = movesList.subList(0, lastIndex);
+    }
+
     private boolean checkWin(int lastColumnInput){
         int row = 0;
         boolean isEmpty;
@@ -186,22 +196,11 @@ public class GameManager implements Serializable {
         System.out.println(row+" "+ lastColumnInput);
         return connectionsChecker.checkForConnectedTokens(row, lastColumnInput, CONNECTED_FOR_WIN);
     }
+
     private void announceWinner(String playerName){
         System.out.flush();
         System.out.println(b.getBoard());
         System.out.println(playerColors.get(playerName)+"PLAYER "+playerName+" WON!");
-    }
-
-    public void removeLastMove(){
-        int lastIndex = movesList.size()-1;
-        if(movesList.isEmpty())
-            return;
-        Integer lastMove = movesList.get(lastIndex);
-
-        boolean success = b.removeTokenFromColumn(lastMove);
-        if(success)
-            movesList = movesList.subList(0, lastIndex);
-
     }
 
     private boolean putToken(String player, int column){
@@ -279,7 +278,6 @@ public class GameManager implements Serializable {
         playersMoveOrder.add(pName);
         b.addPlayer(pName, asciiFormatColor);
     }
-
 
     private void printDraw(){
         System.out.flush();
