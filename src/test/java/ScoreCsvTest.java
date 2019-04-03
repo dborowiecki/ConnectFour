@@ -4,10 +4,7 @@ import org.junit.*;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileWriter;
-import java.io.PrintStream;
-import java.io.PrintWriter;
+import java.io.*;
 
 public class ScoreCsvTest {
     ScoreCsv sc;
@@ -30,7 +27,11 @@ public class ScoreCsvTest {
                 .contains("p2 0 0 5")
                 .contains("p3 0 5 0");
     }
-
+    @Test
+    public void readFromNotExistingFileCatchError(){
+        sc = new ScoreCsv("src/test/notExisting.file");
+        Assertions.catchThrowable(() -> sc.readLeaderBoard());
+    }
     @Test
     public void saveScoreToFileTest(){
         sc = new ScoreCsv(CSV_WRITE_TEST_FILE);

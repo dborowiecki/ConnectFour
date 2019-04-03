@@ -241,31 +241,6 @@ public class GameManager implements Serializable {
         return build.toString();
     }
 
-    private void printBoardInterface(String player, int move){
-        System.out.println("PLAYER: "+player);
-        System.out.println(getDecidingLine(player, move));
-        System.out.println(b.getBoard());
-        printInsructions();
-    }
-
-    private void printInsructions(){
-        System.out.println(getInstructions());
-    }
-
-    private String getInstructions(){
-        return ("D - token to right\n" +
-                "A - token to left" +
-                "S - drop to column "+
-                "Z - return last move "+
-                "o - save game");
-    }
-
-    private void printMenu(){
-        System.out.println("ACTIONS:\n"+
-                "1. Play new game\n"+
-                "2. Show leaderboard");
-    }
-
     private void addPlayer(Scanner sc){
         System.out.println("Player name: ");
         String pName = sc.nextLine();
@@ -319,6 +294,31 @@ public class GameManager implements Serializable {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private void printBoardInterface(String player, int move){
+        System.out.println("PLAYER: "+player);
+        System.out.println(getDecidingLine(player, move));
+        System.out.println(b.getBoard());
+        printInsructions();
+    }
+
+    private void printInsructions(){
+        System.out.println(getInstructions());
+    }
+
+    private String getInstructions(){
+        return ("D - token to right\n" +
+                "A - token to left" +
+                "S - drop to column "+
+                "Z - return last move "+
+                "o - save game");
+    }
+
+    private void printMenu(){
+        System.out.println("ACTIONS:\n"+
+                "1. Play new game\n"+
+                "2. Show leaderboard");
     }
 
     private void showLeaderboard(){
