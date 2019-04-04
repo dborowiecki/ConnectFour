@@ -62,11 +62,17 @@ public class GameManager implements Serializable {
             b = new Board();
         }
         else {
-            System.out.print("Number of rows: ");
-            int numberOfRows = sc.nextInt();
-            System.out.print("Number of columns: ");
-            int numberOfColumns = sc.nextInt();
-            b = new Board(numberOfColumns, numberOfRows);
+            try {
+                System.out.print("Number of rows: ");
+                int numberOfRows = sc.nextInt();
+                System.out.print("Number of columns: ");
+                int numberOfColumns = sc.nextInt();
+                b = new Board(numberOfColumns, numberOfRows);
+            }
+            catch (IllegalArgumentException e){
+                System.out.println("Number of rows and columns are invalid, using regular size");
+                b = new Board();
+            }
         }
         if(leadboard==null)
          setLeadboard("leadboard.csv");
@@ -88,18 +94,8 @@ public class GameManager implements Serializable {
                 TerminalColrs.ANSI_PURPLE +"PURPLE, "+
                 TerminalColrs.ANSI_YELLOW +"YELLOW"+TerminalColrs.ANSI_RESET);
 
-        int j=0;
         for(int i=0; i<NUMBER_OF_PLYERS;i++){
-            try {
                 addPlayer(sc);
-            }
-            catch (Exception e){
-                System.out.println("Error while adding player: "+e.getMessage());
-                System.out.println("Do you want to try again? Y/n");
-                String def = sc.nextLine();
-                if(def.toLowerCase().contains("y"))
-                   i--;
-            }
         }
 
     }
@@ -238,8 +234,20 @@ public class GameManager implements Serializable {
         }   while (playerColors.containsKey(pName));
 
         System.out.println("Player color: ");
-        String pColor = sc.nextLine();
-        String asciiFormatColor = TerminalColrs.translateColor(pColor);
+        String pColor = "";
+        String asciiFormatColor = "";
+        boolean success;
+        do {
+            success = false;
+            pColor = sc.nextLine();
+            try {
+                asciiFormatColor = TerminalColrs.translateColor(pColor);
+                success = true;
+            } catch (Exception e){
+                System.out.println("Color is invalid, try again");
+            }
+
+        }   while (!success);
 
         playerColors.put(pName,asciiFormatColor);
         playersMoveOrder.add(pName);

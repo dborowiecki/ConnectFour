@@ -64,6 +64,17 @@ public class GameManagerTest {
 
         assertThat(boardSize, equalTo(12*8));
     }
+    @Test
+    public void setUpGameTestInvalidBoardSize(){
+        ByteArrayInputStream in = new ByteArrayInputStream("n\n-5\n8".getBytes());
+        System.setIn(in);
+        gm.setUpGame();
+
+        int boardSize = getBoardSize(gm.getBoard());
+        System.setIn(System.in);
+
+        assertThat(boardSize, equalTo(42));
+    }
 
     @Test
     @Parameters({"janusz,red,karol,blue",
@@ -90,7 +101,7 @@ public class GameManagerTest {
     }
 
     @Test
-    @Parameters({"janusz,kolor\nn,karol,blue, Color KOLOR not handled",
+    @Parameters({"janusz,kolor\nred,karol,blue, Color is invalid",
             "p1,blue,p1,red\nred, This player is alredy in game"})
     public void addPlayersTestNegative(String p1, String p1Color,String p2,String p2Color, String errMsg){
 
