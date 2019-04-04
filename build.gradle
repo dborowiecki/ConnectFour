@@ -1,6 +1,7 @@
 
 plugins {
     id 'java'
+    id 'jacoco'
 }
 
 group 'com.dmn'
@@ -11,6 +12,11 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
+
+jacoco {
+    toolVersion = "0.8.2"
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testImplementation 'org.hamcrest:hamcrest:2.1'

@@ -23,7 +23,6 @@ public class TerminalColorTest {
 
     @Test
     public void wrongColorErrorTest(){
-
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> TerminalColrs.translateColor("róż"));
     }
