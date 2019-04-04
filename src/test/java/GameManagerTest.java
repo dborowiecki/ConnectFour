@@ -91,7 +91,7 @@ public class GameManagerTest {
 
     @Test
     @Parameters({"janusz,kolor\nn,karol,blue, Color KOLOR not handled",
-            "p1,blue,p1,red\nn, Player with this name alredy exists"})
+            "p1,blue,p1,red\nred, This player is alredy in game"})
     public void addPlayersTestNegative(String p1, String p1Color,String p2,String p2Color, String errMsg){
 
         createSetUp();

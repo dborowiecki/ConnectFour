@@ -40,7 +40,7 @@ public class MainTest {
         Main.main(new String[]{});
 
         //Check output from possible player inputs
-        Assertions.assertThat(myOut.toString()).contains("Bye").contains("PLAYER-WIN-DRAW-LOST");
+        Assertions.assertThat(myOut.toString()).contains("Thank you for playing").contains("PLAYER-WIN-DRAW-LOST");
     }
     private String createInputStream(String[] values){
         StringBuilder build = new StringBuilder();

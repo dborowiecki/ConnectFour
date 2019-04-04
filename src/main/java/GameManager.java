@@ -230,7 +230,12 @@ public class GameManager implements Serializable {
 
     private void addPlayer(Scanner sc){
         System.out.println("Player name: ");
-        String pName = sc.nextLine();
+        String pName;
+        do {
+            pName = sc.nextLine();
+            if(playerColors.containsKey(pName))
+                System.out.println("This player is alredy in game, choose other name");
+        }   while (playerColors.containsKey(pName));
 
         System.out.println("Player color: ");
         String pColor = sc.nextLine();

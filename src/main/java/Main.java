@@ -11,7 +11,6 @@ public class Main {
     private static void startGame(Scanner sc){
         GameManager gm;
         boolean next = true;
-        while(next){
             System.out.println("1. New game");
             System.out.println("2. Load save");
             System.out.println("3. Show leadboard");
@@ -31,16 +30,13 @@ public class Main {
                     readScores(LEADBOARD_PATH);
                     break;
                 case '4':
-                    System.out.println("Bye");
-                    next = false;
                     break;
 
             }
-        }
+            System.out.println("Thank you for playing");
     }
 
     private static String readPlayerInput(Scanner sc){
-        sc.reset();
         String input;
         do {
             input = sc.nextLine().toLowerCase();
