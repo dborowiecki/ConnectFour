@@ -1,3 +1,6 @@
+import Game.GameManager;
+import Game.ScoreCsv;
+
 import java.util.Scanner;
 
 public class Main {

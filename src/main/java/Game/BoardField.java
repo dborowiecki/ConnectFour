@@ -1,3 +1,5 @@
+package Game;
+
 import java.io.Serializable;
 
 public class BoardField implements Serializable {
