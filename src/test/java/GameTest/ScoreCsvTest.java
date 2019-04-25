@@ -1,8 +1,8 @@
+package GameTest;
+
+import Game.ScoreCsv;
 import org.assertj.core.api.Assertions;
 import org.junit.*;
-
-import org.junit.Rule;
-import org.junit.rules.ExternalResource;
 
 import java.io.*;
 

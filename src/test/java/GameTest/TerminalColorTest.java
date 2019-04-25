@@ -1,3 +1,6 @@
+package GameTest;
+
+import Game.TerminalColrs;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 

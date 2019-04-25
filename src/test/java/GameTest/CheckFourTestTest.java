@@ -1,3 +1,8 @@
+package GameTest;
+
+import Game.Board;
+import Game.ConnectionsChecker;
+import Game.TerminalColrs;
 import junitparams.FileParameters;
 import junitparams.JUnitParamsRunner;
 import junitparams.mappers.IdentityMapper;
