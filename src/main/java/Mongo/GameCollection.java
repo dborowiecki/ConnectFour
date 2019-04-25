@@ -40,6 +40,7 @@ public class GameCollection {
         return board.findOne().as(BoardMongo.class);
 
     }
+
     public void savePlayer(PlayerMongo p){
         players.save(p);
     }
