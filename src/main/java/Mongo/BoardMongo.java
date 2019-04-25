@@ -8,11 +8,6 @@ public class BoardMongo {
 
 
     public BoardMongo(int columns, int rows){
-        if(columns<4||rows<4)
-            throw new IllegalArgumentException("Rows and colums need to be bigger than 4, now:\n"
-            +"Rows: "+rows
-            +"\nColumns: "+columns);
-
         setColumns(columns);
         setRows(rows);
         numberOfMoves = 0;

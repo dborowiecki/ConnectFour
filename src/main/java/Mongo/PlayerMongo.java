@@ -1,10 +1,6 @@
 package Mongo;
-import Game.TerminalColrs;
 
-
-import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 public class PlayerMongo {
@@ -22,14 +18,12 @@ public class PlayerMongo {
 
 
     public void setName(String name){
-        if(name==null||name.length()==0)
-            throw new IllegalArgumentException("Name cant be empty");
 
         this.name = name;
     }
 
     public void setColor(String color){
-        this.color = TerminalColrs.translateColor(color);
+        this.color = color;
     }
 
     public String getColor(){

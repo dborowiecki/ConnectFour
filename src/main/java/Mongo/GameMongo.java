@@ -1,13 +1,14 @@
 package Mongo;
 
+import Game.TerminalColrs;
+
 import java.rmi.UnknownHostException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class GameMongo {
-    private GameCollection game;
+    public static final String[] colors = {"RED", "BLUE", "PURPLE","YELLOW","GREEN"};
     BoardMongo board;
+    private GameCollection game;
     List<MoveMongo> moves;
     List<PlayerMongo> players;
 
@@ -20,17 +21,42 @@ public class GameMongo {
         }
     }
 
-    public void createBoard(int rows, int columns){
-        board = new BoardMongo(columns, rows);
+
+    public void addBoard(BoardMongo board){
+        int columns = board.getColumns();
+        int rows = board.getRows();
+
+        if(columns<4||rows<4)
+            throw new IllegalArgumentException("Rows and colums need to be bigger than 4, now:\n"
+                    +"Rows: "+rows
+                    +"\nColumns: "+columns);
+
+        this.board = board;
         game.saveBoard(board);
     }
 
-    public void addPlayer(String name, String color, Integer score){
-        PlayerMongo p = new PlayerMongo(name, color, score);
-        game.savePlayer(p);
-        players.add(p);
+
+    public void addPlayer(PlayerMongo player){
+        if(player.getName().isEmpty()
+        ||player.getName()==null)
+            throw new IllegalArgumentException("Name can't be null");
+
+        if(!Arrays.asList(colors).contains(player.getColor()))
+            throw new IllegalArgumentException("Color "+player.getColor()+"is not allowed");
+
+        game.savePlayer(player);
+        players.add(player);
 
     }
+
+
+    public List<PlayerMongo> getPlayers(){
+        if(players == null)
+            return Collections.emptyList();
+        else
+            return players;
+    }
+
 
     public List<MoveMongo> getPlayerMoves(String player){
         PlayerMongo p = game.findByName(player);
@@ -98,4 +124,5 @@ public class GameMongo {
         return moves.get(moves.size()-1);
     }
 
+    public BoardMongo getBoard() {return board;}
 }
