@@ -1,12 +1,15 @@
 package Mongo;
 
-import Game.Board;
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
+import java.rmi.UnknownHostException;
+
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
 
-import java.net.UnknownHostException;
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+
+
+
 
 public class GameCollection {
 
@@ -16,10 +19,10 @@ public class GameCollection {
 
     public GameCollection() throws UnknownHostException {
         @SuppressWarnings({ "deprecation", "resource" })
-        DB db = new MongoClient().getDB("Game");
+        DB db = new MongoClient().getDB("game");
         players = new Jongo(db).getCollection("players");
-        moves = new Jongo(db).getCollection("moves");
-        board= new Jongo(db).getCollection("board");
+        moves   = new Jongo(db).getCollection("moves");
+        board   = new Jongo(db).getCollection("board");
     }
 
     public void flushGame(){

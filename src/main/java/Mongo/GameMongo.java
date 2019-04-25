@@ -1,6 +1,6 @@
 package Mongo;
 
-import java.net.UnknownHostException;
+import java.rmi.UnknownHostException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,10 +14,10 @@ public class GameMongo {
     public GameMongo(){
         try {
             game = new GameCollection();
-        } catch (UnknownHostException e) {
+        } catch (Throwable e) {
+            System.out.println("Exception catch:");
             e.printStackTrace();
         }
-
     }
 
     public void createBoard(int rows, int columns){
