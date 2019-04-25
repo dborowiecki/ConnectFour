@@ -55,7 +55,7 @@ public class GameMongoTest {
         doReturn(exepcted).when(gameCollection).getBoard();
         //doReturn(true).when(gameCollection).saveBoard(game.getBoard());
         //Act
-        game.createBoard(10,10);
+        game.addBoard(exepcted);
         BoardMongo actual = gameCollection.getBoard();
         //Assert
         Assertions.assertThat(actual).usingRecursiveComparison().isEqualTo(actual);
@@ -64,11 +64,11 @@ public class GameMongoTest {
     @Test
     public void createBoardSizeException1(){
         //Arrange
-        BoardMongo exepcted = new BoardMongo(-1,10);
+        BoardMongo exepcted = new BoardMongo(10,10);
         doReturn(exepcted).when(gameCollection).getBoard();
         //doReturn(true).when(gameCollection).saveBoard(game.getBoard());
         //Act
-        game.createBoard(10,10);
+        game.addBoard(exepcted);
         BoardMongo actual = gameCollection.getBoard();
         //Assert
         Assertions.assertThat(actual).usingRecursiveComparison().isEqualTo(actual);
