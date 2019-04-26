@@ -10,11 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 
+import java.util.LinkedList;
+import java.util.List;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class GameMongoTest {
@@ -96,8 +99,36 @@ public class GameMongoTest {
 
     @Test
     public void addPlayerTest(){
-        
+        //Arrange
+        List<PlayerMongo> players = new LinkedList<>();
+        when(player.getName()).thenReturn("John");
+        when(player.getColor()).thenReturn("RED");
+        doAnswer(
+                new Answer() {
+                    @Override
+                    public Object answer(InvocationOnMock invocation) throws Throwable {
+                        players.add(player);
+                        return null;
+                    }
+                }).when(gameCollection).savePlayer(player);
+
+        //Act
+        game.addPlayer(player);
+        //Assert
+        Assertions.assertThat(players).hasSize(1).containsOnly(player);
     }
 
 
+
+
+    private class Switcher{
+        private boolean switcher;
+        public Switcher(boolean defaultValue){
+            switcher = defaultValue;
+        }
+
+        public void switchValue(){
+            switcher = !switcher;
+        }
+    }
 }

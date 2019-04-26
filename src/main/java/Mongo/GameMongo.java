@@ -19,6 +19,8 @@ public class GameMongo {
             System.out.println("Exception catch:");
             e.printStackTrace();
         }
+        moves = new LinkedList<>();
+        players = new LinkedList<>();
     }
 
 
@@ -42,7 +44,7 @@ public class GameMongo {
             throw new IllegalArgumentException("Name can't be null");
 
         if(!Arrays.asList(colors).contains(player.getColor()))
-            throw new IllegalArgumentException("Color "+player.getColor()+"is not allowed");
+            throw new IllegalArgumentException("Color "+player.getColor()+" is not allowed");
 
         game.savePlayer(player);
         players.add(player);
