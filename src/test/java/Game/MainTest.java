@@ -1,5 +1,6 @@
-package GameTest;
+package Game;
 
+import Main.Main;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,7 +8,6 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.NoSuchElementException;
 
 public class MainTest {
     private ByteArrayOutputStream myOut;
@@ -27,6 +27,7 @@ public class MainTest {
         System.setIn(myIn);
 
         Main.main(new String[]{});
+
 
         //Check if this calls both methods from start
         Assertions.assertThat(myOut.toString()).contains("This is not correct input");

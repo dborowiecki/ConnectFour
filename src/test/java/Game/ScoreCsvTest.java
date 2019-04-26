@@ -1,6 +1,5 @@
-package GameTest;
+package Game;
 
-import Game.ScoreCsv;
 import org.assertj.core.api.Assertions;
 import org.junit.*;
 

@@ -1,3 +1,5 @@
+package Main;
+
 import Game.GameManager;
 import Game.ScoreCsv;
 

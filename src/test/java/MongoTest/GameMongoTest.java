@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class GameMongoTest {
@@ -21,6 +22,10 @@ public class GameMongoTest {
     //Co zastepujemy
     @Mock
     GameCollection gameCollection;
+    @Mock
+    PlayerMongo player;
+    @Mock
+    BoardMongo board;
 
     //Nasza atrapa
     @InjectMocks
@@ -59,18 +64,40 @@ public class GameMongoTest {
         BoardMongo actual = gameCollection.getBoard();
         //Assert
         Assertions.assertThat(actual).usingRecursiveComparison().isEqualTo(actual);
+
     }
 
     @Test
-    public void createBoardSizeException1(){
+    public void createBoardSizeExceptionColumns(){
         //Arrange
-        BoardMongo exepcted = new BoardMongo(10,10);
-        doReturn(exepcted).when(gameCollection).getBoard();
+        when(board.getColumns()).thenReturn(-1);
+        when(board.getRows()).thenReturn(10);
         //doReturn(true).when(gameCollection).saveBoard(game.getBoard());
         //Act
-        game.addBoard(exepcted);
-        BoardMongo actual = gameCollection.getBoard();
         //Assert
-        Assertions.assertThat(actual).usingRecursiveComparison().isEqualTo(actual);
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> game.addBoard(board))
+                .withMessageContaining("Columns: -1");
     }
+
+    @Test
+    public void createBoardSizeExceptionRows(){
+        //Arrange
+        when(board.getColumns()).thenReturn(10);
+        when(board.getRows()).thenReturn(-10);
+        //doReturn(true).when(gameCollection).saveBoard(game.getBoard());
+        //Act
+        //Assert
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> game.addBoard(board))
+                .withMessageContaining("Rows: -10")
+                .withNoCause();
+    }
+
+    @Test
+    public void addPlayerTest(){
+        
+    }
+
+
 }

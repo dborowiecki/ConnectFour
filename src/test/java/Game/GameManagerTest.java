@@ -1,9 +1,5 @@
-package GameTest;
+package Game;
 
-import Game.Board;
-import Game.BoardField;
-import Game.GameManager;
-import Game.TerminalColrs;
 import junitparams.FileParameters;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;

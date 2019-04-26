@@ -1,7 +1,7 @@
 
 plugins {
     id 'java'
-    id 'jacoco'
+   // id 'jacoco'
 }
 
 group 'com.dmn'
@@ -13,15 +13,16 @@ repositories {
     mavenCentral()
 }
 
-jacoco {
-    toolVersion = "0.8.2"
-}
+//jacoco {
+//    toolVersion = "0.8.2"
+//}
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testImplementation 'org.hamcrest:hamcrest:2.1'
     testCompile 'pl.pragmatists:JUnitParams:1.1.1'
     testCompile("org.assertj:assertj-core:3.12.0")
+
     compile group: 'com.opencsv', name: 'opencsv', version: '4.1'
     // https://mvnrepository.com/artifact/org.jongo/jongo
     compile group: 'org.jongo', name: 'jongo', version: '0.2'
@@ -34,5 +35,13 @@ dependencies {
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
 
     implementation 'org.mockito:mockito-junit-jupiter:2.27.0'
+// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-core
+    compile group: 'org.mongodb', name: 'mongodb-driver-core', version: '3.0.1'
+// https://mvnrepository.com/artifact/org.mongodb/bson
+    compile group: 'org.mongodb', name: 'bson', version: '3.0.1'
+    testCompile 'org.mockito:mockito-junit-jupiter:2.17.2'  //mockito-core is implicitly added
+
+    testCompile 'org.junit.vintage:junit-vintage-engine:5.1.0'  //for JUnit 4.12 test execution, if needed
+    testCompile 'org.assertj:assertj-core:3.9.1'    //if you like it (you should ;) )
 
 }

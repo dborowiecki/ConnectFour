@@ -1,8 +1,5 @@
-package GameTest;
+package Game;
 
-import Game.Board;
-import Game.BoardField;
-import Game.TerminalColrs;
 import junitparams.JUnitParamsRunner;
 import org.assertj.core.api.Assertions;
 import junitparams.Parameters;

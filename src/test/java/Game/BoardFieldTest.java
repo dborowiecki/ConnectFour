@@ -1,7 +1,5 @@
-package GameTest;
+package Game;
 
-import Game.BoardField;
-import Game.TerminalColrs;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
