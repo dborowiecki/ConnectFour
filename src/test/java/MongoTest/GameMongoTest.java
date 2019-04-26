@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.internal.verification.Times;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
@@ -116,10 +117,55 @@ public class GameMongoTest {
         game.addPlayer(player);
         //Assert
         Assertions.assertThat(players).hasSize(1).containsOnly(player);
+
+        verify(player,times(1)).getName();
+        verify(player,times(1)).getColor();
+        verify(gameCollection,times(1)).savePlayer(player);
+
     }
 
+    @Test
+    public void addPlayerTestNullName(){
+        //Arrange
+        when(player.getName()).thenReturn(null);
+        //Act
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> game.addPlayer(player))
+                .withMessageContaining("Name can't be empty")
+                .withNoCause();
 
+        verify(player,times(1)).getName();
 
+    }
+
+    @Test
+    public void addPlayerTestEmptyName(){
+        //Arrange
+        when(player.getName()).thenReturn("");
+        //Act
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> game.addPlayer(player))
+                .withMessageContaining("Name can't be empty")
+                .withNoCause();
+
+        verify(player,times(1)).getName();
+
+    }
+
+    @Test
+    public void addPlayerTestWrongColor(){
+        //Arrange
+        when(player.getName()).thenReturn("name");
+        when(player.getColor()).thenReturn("incorrect");
+        //Act
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> game.addPlayer(player))
+                .withMessageMatching("Color [a-zA-Z]* is not allowed")
+                .withNoCause();
+
+        verify(player,times(1)).getColor();
+
+    }
 
     private class Switcher{
         private boolean switcher;

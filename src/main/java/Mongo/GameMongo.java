@@ -39,12 +39,13 @@ public class GameMongo {
 
 
     public void addPlayer(PlayerMongo player){
-        if(player.getName().isEmpty()
-        ||player.getName()==null)
-            throw new IllegalArgumentException("Name can't be null");
+        String name = player.getName();
+        String color = player.getColor();
+        if(name==null || name.isEmpty())
+            throw new IllegalArgumentException("Name can't be empty");
 
-        if(!Arrays.asList(colors).contains(player.getColor()))
-            throw new IllegalArgumentException("Color "+player.getColor()+" is not allowed");
+        if(!Arrays.asList(colors).contains(color))
+            throw new IllegalArgumentException("Color "+color+" is not allowed");
 
         game.savePlayer(player);
         players.add(player);
