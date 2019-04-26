@@ -44,4 +44,8 @@ dependencies {
     testCompile 'org.junit.vintage:junit-vintage-engine:5.1.0'  //for JUnit 4.12 test execution, if needed
     testCompile 'org.assertj:assertj-core:3.9.1'    //if you like it (you should ;) )
 
+// https://mvnrepository.com/artifact/org.easymock/easymock
+    testCompile group: 'org.easymock', name: 'easymock', version: '4.0.2'
+
+
 }

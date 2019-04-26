@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class GameMongoTest {
 
-    //Co zastepujemy
+
     @Mock
     GameCollection gameCollection;
     @Mock
@@ -31,7 +31,7 @@ public class GameMongoTest {
     @Mock
     BoardMongo board;
 
-    //Nasza atrapa
+
     @InjectMocks
     GameMongo game;
 
@@ -89,7 +89,7 @@ public class GameMongoTest {
         //Arrange
         when(board.getColumns()).thenReturn(10);
         when(board.getRows()).thenReturn(-10);
-        //doReturn(true).when(gameCollection).saveBoard(game.getBoard());
+
         //Act
         //Assert
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
