@@ -53,6 +53,9 @@ public class GameCollection {
         moves.save(move);
     }
 
+    public void deleteMove(MoveMongo move){
+        moves.remove("{order: #",move.getOrder());
+    }
     public void saveBoard(BoardMongo b){
         board.save(b);
     }

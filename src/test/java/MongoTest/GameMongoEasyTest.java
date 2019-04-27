@@ -101,12 +101,47 @@ public class GameMongoEasyTest {
                         return null;
                     }
                 });
-        
+
         replay(gameCollection, boardMongo);
 
         game.makeMove("name", 0);
 
         Assertions.assertThat(moves).containsExactly(moveMongo);
+    }
+
+    @Test
+    public void makeMoveNegativeColumnsTest(){
+        game.setBoard(boardMongo);
+
+        expect(gameCollection.findByName("name")).andReturn(playerMongo);
+        expect(boardMongo.getColumns()).andReturn(10);
+        replay(gameCollection, boardMongo);
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> game.makeMove("name",-1))
+                .withNoCause();
+    }
+
+    @Test
+    public void makeMoveOverSizeColumnsTest(){
+        BoardMongo b = new BoardMongo(10,10);
+        game.setBoard(b);
+        expect(gameCollection.findByName("name")).andReturn(playerMongo);
+        replay(gameCollection);
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> game.makeMove("name",20))
+                .withMessageContaining("Column have to be between 0 and 10")
+                .withNoCause();
+    }
+
+    @Test
+    public void reverseLastMoveNoMovesExceptionTest(){
+        expect(gameCollection.findByName("player")).andReturn(playerMongo);
+        replay(gameCollection);
+        game.setMoves(new LinkedList<>());
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> game.reverseLastMove("name"))
+                .withMessage("There vere no moves")
+                .withNoCause();
     }
 }
 

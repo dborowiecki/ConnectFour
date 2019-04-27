@@ -38,7 +38,7 @@ public class GameMongoTest {
 
     @Test
     public void mockingTest(){
-        PlayerMongo joe = new PlayerMongo("Walter White", "red", 0);
+        PlayerMongo joe = new PlayerMongo("Walter White", "red");
         doReturn(joe).when(gameCollection).findByName("Walter White");
         Assertions.assertThat(gameCollection.findByName("Walter White")).isEqualTo(joe);
     }

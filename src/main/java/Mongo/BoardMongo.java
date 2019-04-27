@@ -32,6 +32,9 @@ public class BoardMongo {
     public void incNumberOfMoves(){
         numberOfMoves++;
     }
+    public void decNumberOfMoves(){
+        numberOfMoves--;
+    }
     public int getNumberOfMoves(){
         return numberOfMoves;
     }

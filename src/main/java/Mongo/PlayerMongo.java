@@ -8,12 +8,13 @@ public class PlayerMongo {
     String name;
     String color;
     List<Integer> moves;
-    Integer score;
+    Integer win;
+    Integer draw;
+    Integer lose;
 
-    public PlayerMongo(String name, String color, Integer score){
+    public PlayerMongo(String name, String color){
         this.setName(name);
         this.setColor(color);
-        this.score = score;
     }
 
 
@@ -34,15 +35,19 @@ public class PlayerMongo {
         return name;
     }
 
-    public Integer getScore(){
-        return score;
+    public Integer getWins(){
+        return win;
     }
+    public Integer getLose(){ return lose;}
+    public Integer getDraw(){ return draw; }
 
-    public void addScore(Integer score){
-        Integer[] scores = {-1,0,1};
-        if (Arrays.asList(scores).contains(score))
-            throw new IllegalArgumentException("Score have to be -1, 0 or 1");
-        else
-            this.score+=score;
+    public void addWin(){
+       this.win=this.win+1;
+    }
+    public void addWLose(){
+        this.lose = this.lose+1;
+    }
+    public void addDraw(){
+        this.draw = this.draw +1;
     }
 }

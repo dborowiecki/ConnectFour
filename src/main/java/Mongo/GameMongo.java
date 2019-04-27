@@ -79,7 +79,7 @@ public class GameMongo {
         List<MoveMongo> playerMoves = new LinkedList<MoveMongo>();
 
         for(MoveMongo m: moves){
-            if(m.player==p)
+            if(m.getPlayer()==p)
                 playerMoves.add(m);
         }
 
@@ -98,30 +98,52 @@ public class GameMongo {
 
         moves.add(m);
         game.saveMove(m);
+    }
 
+    public void reverseLastMove(String player){
+        PlayerMongo p = game.findByName(player);
+
+        if(moves.size()==0)
+            throw new IllegalArgumentException("There vere no moves");
+
+        MoveMongo last;
+
+        for(int i=moves.size()-1;i>0;i--){
+            last = moves.get(moves.size()-1);
+            if(last.getPlayer().equals(p)){
+                moves.remove(last);
+                board.decNumberOfMoves();
+                game.deleteMove(last);
+                break;
+            }
+        }
     }
 
     public void endGame(String winnerName){
         PlayerMongo winner = game.findByName(winnerName);
-        winner.addScore(Score.WIN);
+
+        winner.addWin();
         for(PlayerMongo p: players){
             if(!p.equals(winner))
-                p.addScore(Score.LOSE);
-
+               p.addWLose();
             game.savePlayer(p);
         }
     }
 
     public void endGameDraw(){
         for(PlayerMongo p: players){
-            p.addScore(Score.DRAW);
+            p.addDraw();
             game.savePlayer(p);
         }
     }
 
-    public int getPlayerScore(String playerName){
+    public HashMap<String, Integer> getPlayerScore(String playerName){
         PlayerMongo p = game.findByName(playerName);
-        return p.getScore();
+        HashMap<String, Integer> score = new HashMap<>();
+        score.put("Win", p.getWins());
+        score.put("Lose", p.getLose());
+        score.put("Draw", p.getDraw());
+        return score;
     }
 
     public List<MoveMongo> getMoves() {

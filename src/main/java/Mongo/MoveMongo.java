@@ -1,9 +1,9 @@
 package Mongo;
 
 public class MoveMongo {
-    PlayerMongo player;
-    Integer order;
-    Integer column;
+    private PlayerMongo player;
+    private Integer order;
+    private Integer column;
 
     public MoveMongo(PlayerMongo player, int column){
         setPlayer(player);
@@ -23,7 +23,8 @@ public class MoveMongo {
         this.order = order;
     }
 
-    public MoveMongo getMove(){
-        return this;
-    }
+
+    public PlayerMongo getPlayer(){ return player;}
+    public Integer getColumn() {return column;}
+    public Integer getOrder() {return order;}
 }
