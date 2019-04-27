@@ -6,7 +6,8 @@ interface BoardMongoI{
     void incNumberOfMoves();
     void decNumberOfMoves();
     int getNumberOfMoves();
-
+    void  setRows(int rows);
+    void setColumns(int columns);
 }
 
 public class BoardMongo implements BoardMongoI{
@@ -40,9 +41,11 @@ public class BoardMongo implements BoardMongoI{
     public void incNumberOfMoves(){
         numberOfMoves++;
     }
+
     public void decNumberOfMoves(){
         numberOfMoves--;
     }
+
     public int getNumberOfMoves(){
         return numberOfMoves;
     }

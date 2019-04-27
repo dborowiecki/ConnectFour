@@ -104,7 +104,7 @@ public class GameMongo {
         PlayerMongo p = game.findByName(player);
 
         if(moves.size()==0)
-            throw new IllegalArgumentException("There vwre no moves");
+            throw new IllegalArgumentException("There were no moves");
 
         MoveMongo last;
 

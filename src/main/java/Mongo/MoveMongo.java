@@ -2,12 +2,16 @@ package Mongo;
 
 
 interface MoveMongoI{
-    public PlayerMongo getPlayer();
+    public PlayerMongoI getPlayer();
     public Integer getColumn();
     public Integer getOrder();
+    void setPlayer(PlayerMongoI p);
+    void setColumn(Integer column);
+    void setOrder(Integer order);
 }
+
 public class MoveMongo implements MoveMongoI{
-    private PlayerMongo player;
+    private PlayerMongoI player;
     private Integer order;
     private Integer column;
 
@@ -21,7 +25,7 @@ public class MoveMongo implements MoveMongoI{
         this.column = column;
     }
 
-    public void setPlayer(PlayerMongo player){
+    public void setPlayer(PlayerMongoI player){
         this.player = player;
     }
 
@@ -30,7 +34,7 @@ public class MoveMongo implements MoveMongoI{
     }
 
 
-    public PlayerMongo getPlayer(){ return player;}
+    public PlayerMongoI getPlayer(){ return player;}
     public Integer getColumn() {return column;}
     public Integer getOrder() {return order;}
 }

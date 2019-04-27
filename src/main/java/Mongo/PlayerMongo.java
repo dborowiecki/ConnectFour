@@ -9,13 +9,14 @@ interface PlayerMongoI{
     Integer getWins();
     Integer getLose();
     Integer getDraw();
+    void setColor(String color);
+    void setName(String name);
 }
 
 public class PlayerMongo implements PlayerMongoI{
  //   private long _id;
     String name;
     String color;
-    List<Integer> moves;
     Integer win;
     Integer draw;
     Integer lose;

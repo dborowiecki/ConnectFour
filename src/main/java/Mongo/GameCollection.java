@@ -11,12 +11,12 @@ import com.mongodb.MongoClient;
 
 
 interface GameCollectionI{
-    PlayerMongo findByName(String name);
-    PlayerMongo findByColor(String color);
-    void savePlayer(PlayerMongo p);
-    void saveMove(MoveMongo m);
-    void saveBoard(BoardMongo b);
-    void deleteMove(MoveMongo m);
+    PlayerMongoI findByName(String name);
+    PlayerMongoI findByColor(String color);
+    void savePlayer(PlayerMongoI p);
+    void saveMove(MoveMongoI m);
+    void saveBoard(BoardMongoI b);
+    void deleteMove(MoveMongoI m);
 }
 public class GameCollection implements GameCollectionI{
 
@@ -39,11 +39,11 @@ public class GameCollection implements GameCollectionI{
         board.drop();
     }
 
-    public PlayerMongo findByName(String name){
-        return players.findOne("{_id: #", name).as(PlayerMongo.class);
+    public PlayerMongoI findByName(String name){
+        return players.findOne("{name: #", name).as(PlayerMongo.class);
     }
 
-    public PlayerMongo findByColor(String color){
+    public PlayerMongoI findByColor(String color){
         return players.findOne("{color: #", color).as(PlayerMongo.class);
     }
 
@@ -52,19 +52,19 @@ public class GameCollection implements GameCollectionI{
         return board.findOne().as(BoardMongo.class);
     }
 
-    public void savePlayer(PlayerMongo p){
+    public void savePlayer(PlayerMongoI p){
         players.save(p);
     }
 
 
-    public void saveMove(MoveMongo move){
+    public void saveMove(MoveMongoI move){
         moves.save(move);
     }
 
-    public void deleteMove(MoveMongo move){
+    public void deleteMove(MoveMongoI move){
         moves.remove("{order: #",move.getOrder());
     }
-    public void saveBoard(BoardMongo b){
+    public void saveBoard(BoardMongoI b){
         board.save(b);
     }
 }
