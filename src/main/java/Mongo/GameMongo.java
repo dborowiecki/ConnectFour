@@ -96,16 +96,7 @@ public class GameMongo {
         m.setOrder(board.getNumberOfMoves());
         board.incNumberOfMoves();
 
-        moves.add(m);
-        game.saveMove(m);
-    }
-
-    public void addMove(MoveMongoI move){
-        for(MoveMongoI m: moves)
-            if(m.getOrder()==move.getOrder())
-                throw new IllegalArgumentException("2 moves cant be made at same time");
-        moves.add(move);
-        game.saveMove(move);
+        addMove(m);
     }
 
     public void reverseLastMove(String player){
@@ -159,6 +150,14 @@ public class GameMongo {
         score.put("Lose", p.getLose());
         score.put("Draw", p.getDraw());
         return score;
+    }
+
+    public void addMove(MoveMongoI move){
+        for(MoveMongoI m: moves)
+            if(m.getOrder()==move.getOrder())
+                throw new IllegalArgumentException("2 moves cant be made at same time");
+        moves.add(move);
+        game.saveMove(move);
     }
 
     public List<MoveMongoI> getMoves() {

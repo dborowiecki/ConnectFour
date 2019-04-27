@@ -116,6 +116,30 @@ public class GamMongoCustomMockTest {
         List<MoveMongoI> moves = game.getMoves();
         Assertions.assertThat(moves).hasSize(1).hasOnlyElementsOfType(MoveMongo.class);
     }
+
+    @Test
+    public void addMoveTest(){
+        game.addMove(move);
+
+        Assertions.assertThat(game.getMoves()).containsExactly(move);
+    }
+
+    @Test
+    public void addMoveTwoMovesAtSamePositionTest(){
+        game.addMove(move);
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() ->
+                        game.addMove(move))
+                .withMessageContaining("2 moves cant be made at same time")
+                .withNoCause();
+    }
+
+    @Test
+    public void gettingLastMoveTest(){
+        game.addMove(move);
+
+        Assertions.assertThat(game.getLastMove()).isEqualTo(move);
+    }
 }
 
 class BoardMock implements BoardMongoI{
