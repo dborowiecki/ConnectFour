@@ -137,5 +137,6 @@ public class GameMongo {
         return moves.get(moves.size()-1);
     }
 
+    public void setBoard(BoardMongo b) {this.board = b;}
     public BoardMongo getBoard() {return board;}
 }

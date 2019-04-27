@@ -51,7 +51,7 @@ public class GameMongoEasyTest {
     }
 
     @Test
-    public void mockingWorksAsExpected(){
+    public void mockingWorksAsExpectedTest(){
         expect(gameCollection.findByColor("RED")).andReturn(playerMongo);
         replay(gameCollection);
         assertThat(gameCollection.findByColor("RED")).isEqualTo(playerMongo);
@@ -59,14 +59,14 @@ public class GameMongoEasyTest {
 
 
     @Test
-    public void getPlayerMovesEmptyPlayer(){
+    public void getPlayerMovesEmptyPlayerTest(){
         expect(gameCollection.findByName("name")).andReturn(null);
         replay(gameCollection);
         assertThat(game.getPlayerMoves("name")).isNullOrEmpty();
     }
 
     @Test
-    public void getPlayerMoves(){
+    public void getPlayerMovesTest(){
         List<MoveMongo> allMoves = new LinkedList<>();
         MoveMongo move1 = new MoveMongo(playerMongo, 0);
         MoveMongo move2 = new MoveMongo(playerMongo, 1);
@@ -75,6 +75,7 @@ public class GameMongoEasyTest {
         allMoves.add(new MoveMongo(mock(PlayerMongo.class), 1));
         game.setMoves(allMoves);
 
+
         expect(gameCollection.findByName("player")).andReturn(playerMongo);
         replay(gameCollection);
         List<MoveMongo> moves = game.getPlayerMoves("player");
@@ -82,6 +83,30 @@ public class GameMongoEasyTest {
         assertThat(moves).isInstanceOf(List.class).containsExactly(move1, move2);
     }
 
+    @Test
+    public void makeMoveTest() {
+        List<MoveMongo> moves = new LinkedList<>();
 
+        game.setBoard(boardMongo);
+
+        expect(gameCollection.findByName("name")).andReturn(playerMongo);
+        expect(boardMongo.getColumns()).andReturn(10);
+        expect(boardMongo.getNumberOfMoves()).andReturn(1);
+
+        gameCollection.saveMove((MoveMongo) anyObject());
+        expectLastCall().andAnswer(
+                new IAnswer() {
+                    public Object answer() {
+                        moves.add(moveMongo);
+                        return null;
+                    }
+                });
+        
+        replay(gameCollection, boardMongo);
+
+        game.makeMove("name", 0);
+
+        Assertions.assertThat(moves).containsExactly(moveMongo);
+    }
 }
 
