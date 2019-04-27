@@ -15,7 +15,7 @@ public class MoveMongo implements MoveMongoI{
     private Integer order;
     private Integer column;
 
-    public MoveMongo(PlayerMongo player, int column){
+    public MoveMongo(PlayerMongoI player, int column){
         setPlayer(player);
         setColumn(column);
 

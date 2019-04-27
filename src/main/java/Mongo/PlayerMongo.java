@@ -11,6 +11,9 @@ interface PlayerMongoI{
     Integer getDraw();
     void setColor(String color);
     void setName(String name);
+    void addWin();
+    void addLose();
+    void addDraw();
 }
 
 public class PlayerMongo implements PlayerMongoI{
@@ -53,7 +56,7 @@ public class PlayerMongo implements PlayerMongoI{
     public void addWin(){
        this.win=this.win+1;
     }
-    public void addWLose(){
+    public void addLose(){
         this.lose = this.lose+1;
     }
     public void addDraw(){

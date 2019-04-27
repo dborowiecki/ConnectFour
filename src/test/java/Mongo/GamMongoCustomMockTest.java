@@ -1,10 +1,9 @@
 package Mongo;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import org.assertj.core.api.Assertions;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,15 +12,19 @@ public class GamMongoCustomMockTest {
     BoardMongoI board;
     PlayerMongoI player;
     MoveMongoI move;
-    GameCollectionI game;
+    GameCollectionI gameCollection;
+    GameMongo game;
 
     @BeforeEach
     public void setup(){
         board = new BoardMock();
-        player = new PlayerMock();
+        player = new PlayerMock("John Doe");
         move = new MoveMock();
-        game = new GameCollectionMock();
+        gameCollection = new GameCollectionMock();
+        game = new GameMongo(gameCollection);
+        game.setBoard(board);
     }
+
     @AfterEach
     public void teardown(){
         board = null;
@@ -32,8 +35,51 @@ public class GamMongoCustomMockTest {
 
     @Test
     public void mocksTest(){
-        Assertions.assertAll(
+        gameCollection.savePlayer(player);
 
+        org.junit.jupiter.api.Assertions.assertAll(
+                () -> Assertions.assertThat(board.getColumns()).isEqualTo(0),
+                () -> Assertions.assertThat(player.getName()).isEqualToIgnoringCase("john doe"),
+                () -> Assertions.assertThat(gameCollection.findByName("John Doe")).isInstanceOf(player.getClass()),
+                () -> Assertions.assertThat(move).isInstanceOf(MoveMongoI.class)
+        );
+    }
+
+    @Test
+    public void endGameWinTest(){
+        PlayerMock secondPlayer = new PlayerMock("John");
+        game.addPlayer(player);
+        game.addPlayer(secondPlayer);
+
+        game.endGame("John");
+        org.junit.jupiter.api.Assertions.assertAll(
+                () -> Assertions.assertThat(player.getLose()).isEqualTo(10),
+                () -> Assertions.assertThat(secondPlayer.getWins()).isEqualTo(10)
+        );
+    }
+
+    @Test
+    public void endGameInvalidUserTest(){
+        PlayerMock secondPlayer = new PlayerMock("Im not in game");
+        game.addPlayer(player);
+        game.addPlayer(secondPlayer);
+
+
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> game.endGame("John"))
+                .withMessageContaining("Player was not in game")
+        .withNoCause();
+    }
+
+    @Test
+    public void endGameDrawTest(){
+        game.addPlayer(player);
+
+        game.endGameDraw();
+        org.junit.jupiter.api.Assertions.assertAll(
+                () -> Assertions.assertThat(player.getDraw()).isEqualTo(10),
+                () -> Assertions.assertThat(player.getWins()).isEqualTo(0),
+                () -> Assertions.assertThat(player.getLose()).isEqualTo(0)
         );
     }
 }
@@ -63,51 +109,72 @@ class BoardMock implements BoardMongoI{
 }
 
 class PlayerMock implements PlayerMongoI{
+    String id;
+    int win,draw,lose;
 
+    public PlayerMock(String id){
+        this.id=id;
+    }
     @Override
-    public String getName() { return "John Doe"; }
+    public String getName() { return id; }
 
     @Override
     public String getColor() { return "RED"; }
 
     @Override
-    public Integer getWins() { return 0; }
+    public Integer getWins() { return win; }
 
     @Override
-    public Integer getLose() { return 0; }
+    public Integer getLose() { return lose; }
 
     @Override
-    public Integer getDraw() { return 0; }
+    public Integer getDraw() { return draw; }
 
     @Override
     public void setColor(String color) { }
 
     @Override
     public void setName(String name) { }
+
+    @Override
+    public void addWin() { win=10;}
+
+    @Override
+    public void addLose() { lose=10;}
+
+    @Override
+    public void addDraw() { draw=10;}
 }
 
 class GameCollectionMock implements GameCollectionI{
-    PlayerMongoI p;
+    List<PlayerMongoI> p;
     List<MoveMongoI> moves;
     List<BoardMongoI> board;
-
     public GameCollectionMock(){
         moves = new LinkedList<>();
         board = new LinkedList<>();
+        p = new LinkedList<PlayerMongoI>();
     }
 
     @Override
     public PlayerMongoI findByName(String name) {
-        return p;
+        for(PlayerMongoI player: p)
+            if(player.getName()==name)
+                return player;
+            return null;
     }
 
     @Override
     public PlayerMongoI findByColor(String color) {
-        return p;
+        for(PlayerMongoI player: p)
+            if(player.getColor()==color)
+                return player;
+
+            return null;
     }
 
     @Override
-    public void savePlayer(PlayerMongoI p) { }
+    public void savePlayer(PlayerMongoI player) {p.add(player); }
 
     @Override
     public void saveMove(MoveMongoI m) {moves.add(m); }
@@ -127,10 +194,10 @@ class MoveMock implements MoveMongoI{
     }
 
     @Override
-    protected void finalize(){ instances--; }
+    protected void finalize(){ try{super.finalize();instances--; }catch (Throwable  e){}}
 
     @Override
-    public PlayerMongoI getPlayer() { return new PlayerMock(); }
+    public PlayerMongoI getPlayer() { return new PlayerMock("movemocked"); }
 
     @Override
     public Integer getColumn() { return 1; }

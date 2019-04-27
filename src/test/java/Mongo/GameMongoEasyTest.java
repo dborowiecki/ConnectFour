@@ -63,7 +63,7 @@ public class GameMongoEasyTest {
 
     @Test
     public void getPlayerMovesTest(){
-        List<MoveMongo> allMoves = new LinkedList<>();
+        List<MoveMongoI> allMoves = new LinkedList<>();
         MoveMongo move1 = new MoveMongo(playerMongo, 0);
         MoveMongo move2 = new MoveMongo(playerMongo, 1);
         allMoves.add(move1);
@@ -74,7 +74,7 @@ public class GameMongoEasyTest {
 
         expect(gameCollection.findByName("player")).andReturn(playerMongo);
         replay(gameCollection);
-        List<MoveMongo> moves = game.getPlayerMoves("player");
+        List<MoveMongoI> moves = game.getPlayerMoves("player");
 
         assertThat(moves).isInstanceOf(List.class).containsExactly(move1, move2);
     }
@@ -142,7 +142,7 @@ public class GameMongoEasyTest {
 
     @Test
     public void reverseLastMoveTest(){
-        List<MoveMongo> newList = new LinkedList<>();
+        List<MoveMongoI> newList = new LinkedList<>();
         newList.add(moveMongo);
         moveMongo.setPlayer(playerMongo);
         game.setMoves(newList);
@@ -166,7 +166,7 @@ public class GameMongoEasyTest {
 
     @Test
     public void reverseLastPlayerWithoutMovesTest(){
-        List<MoveMongo> newList = new LinkedList<>();
+        List<MoveMongoI> newList = new LinkedList<>();
         PlayerMongo another = mock(PlayerMongo.class);
         newList.add(moveMongo);
         moveMongo.setPlayer(playerMongo);

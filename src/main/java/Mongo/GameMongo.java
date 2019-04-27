@@ -7,10 +7,10 @@ import java.util.*;
 
 public class GameMongo {
     public static final String[] colors = {"RED", "BLUE", "PURPLE","YELLOW","GREEN"};
-    BoardMongo board;
-    private GameCollection game;
-    List<MoveMongo> moves;
-    List<PlayerMongo> players;
+    BoardMongoI board;
+    private GameCollectionI game;
+    List<MoveMongoI> moves;
+    List<PlayerMongoI> players;
 
     public GameMongo(){
         try {
@@ -23,7 +23,7 @@ public class GameMongo {
         players = new LinkedList<>();
     }
 
-    public GameMongo(GameCollection game){
+    public GameMongo(GameCollectionI game){
         try {
             this.game = game;
         } catch (Throwable e) {
@@ -34,7 +34,7 @@ public class GameMongo {
         players = new LinkedList<>();
     }
 
-    public void addBoard(BoardMongo board){
+    public void addBoard(BoardMongoI board){
         int columns = board.getColumns();
         int rows = board.getRows();
 
@@ -48,7 +48,7 @@ public class GameMongo {
     }
 
 
-    public void addPlayer(PlayerMongo player){
+    public void addPlayer(PlayerMongoI player){
         String name = player.getName();
         String color = player.getColor();
         if(name==null || name.isEmpty())
@@ -63,7 +63,7 @@ public class GameMongo {
     }
 
 
-    public List<PlayerMongo> getPlayers(){
+    public List<PlayerMongoI> getPlayers(){
         if(players == null)
             return Collections.emptyList();
         else
@@ -71,14 +71,14 @@ public class GameMongo {
     }
 
 
-    public List<MoveMongo> getPlayerMoves(String player){
-        PlayerMongo p = game.findByName(player);
+    public List<MoveMongoI> getPlayerMoves(String player){
+        PlayerMongoI p = game.findByName(player);
         if (p == null){
             return Collections.emptyList();
         }
-        List<MoveMongo> playerMoves = new LinkedList<MoveMongo>();
+        List<MoveMongoI> playerMoves = new LinkedList<MoveMongoI>();
 
-        for(MoveMongo m: moves){
+        for(MoveMongoI m: moves){
             if(m.getPlayer()==p)
                 playerMoves.add(m);
         }
@@ -87,7 +87,7 @@ public class GameMongo {
     }
 
     public void makeMove(String player, int column){
-        PlayerMongo p = game.findByName(player);
+        PlayerMongoI p = game.findByName(player);
 
         if(column<0||column>board.getColumns())
             throw  new IllegalArgumentException("Column have to be between 0 and "+board.getColumns());
@@ -101,12 +101,12 @@ public class GameMongo {
     }
 
     public void reverseLastMove(String player){
-        PlayerMongo p = game.findByName(player);
+        PlayerMongoI p = game.findByName(player);
 
         if(moves.size()==0)
             throw new IllegalArgumentException("There were no moves");
 
-        MoveMongo last;
+        MoveMongoI last;
 
 
         for(int i=moves.size();i>0;i--){
@@ -121,25 +121,28 @@ public class GameMongo {
     }
 
     public void endGame(String winnerName){
-        PlayerMongo winner = game.findByName(winnerName);
+        PlayerMongoI winner = game.findByName(winnerName);
+
+        if(!players.contains(winner))
+            throw new IllegalArgumentException("Player was not in game");
 
         winner.addWin();
-        for(PlayerMongo p: players){
+        for(PlayerMongoI p: players){
             if(!p.equals(winner))
-               p.addWLose();
+               p.addLose();
             game.savePlayer(p);
         }
     }
 
     public void endGameDraw(){
-        for(PlayerMongo p: players){
+        for(PlayerMongoI p: players){
             p.addDraw();
             game.savePlayer(p);
         }
     }
 
     public HashMap<String, Integer> getPlayerScore(String playerName){
-        PlayerMongo p = game.findByName(playerName);
+        PlayerMongoI p = game.findByName(playerName);
         HashMap<String, Integer> score = new HashMap<>();
         score.put("Win", p.getWins());
         score.put("Lose", p.getLose());
@@ -147,19 +150,19 @@ public class GameMongo {
         return score;
     }
 
-    public List<MoveMongo> getMoves() {
+    public List<MoveMongoI> getMoves() {
         return moves;
     }
 
-    public void setMoves(List<MoveMongo> moves) {
+    public void setMoves(List<MoveMongoI> moves) {
         this.moves = moves;
     }
 
 
-    public MoveMongo getLastMove(){
+    public MoveMongoI getLastMove(){
         return moves.get(moves.size()-1);
     }
 
-    public void setBoard(BoardMongo b) {this.board = b;}
-    public BoardMongo getBoard() {return board;}
+    public void setBoard(BoardMongoI b) {this.board = b;}
+    public BoardMongoI getBoard() {return board;}
 }
