@@ -38,7 +38,7 @@ public class GameMongoEasyTest {
         playerMongo= mock(NICE, PlayerMongo.class);
         moveMongo  = mock(NICE, MoveMongo.class);
 
-        game = new GameMongo();
+        game = new GameMongo(gameCollection);
     }
 
     @AfterEach
@@ -50,16 +50,37 @@ public class GameMongoEasyTest {
         game           = null;
     }
 
-
     @Test
     public void mockingWorksAsExpected(){
-        //Zapisanie zachowania - co sie ma stac
         expect(gameCollection.findByColor("RED")).andReturn(playerMongo);
-        //Odpalenie obiektu do sprawdzenia zachowania
         replay(gameCollection);
         assertThat(gameCollection.findByColor("RED")).isEqualTo(playerMongo);
     }
 
+
+    @Test
+    public void getPlayerMovesEmptyPlayer(){
+        expect(gameCollection.findByName("name")).andReturn(null);
+        replay(gameCollection);
+        assertThat(game.getPlayerMoves("name")).isNullOrEmpty();
+    }
+
+    @Test
+    public void getPlayerMoves(){
+        List<MoveMongo> allMoves = new LinkedList<>();
+        MoveMongo move1 = new MoveMongo(playerMongo, 0);
+        MoveMongo move2 = new MoveMongo(playerMongo, 1);
+        allMoves.add(move1);
+        allMoves.add(move2);
+        allMoves.add(new MoveMongo(mock(PlayerMongo.class), 1));
+        game.setMoves(allMoves);
+
+        expect(gameCollection.findByName("player")).andReturn(playerMongo);
+        replay(gameCollection);
+        List<MoveMongo> moves = game.getPlayerMoves("player");
+
+        assertThat(moves).isInstanceOf(List.class).containsExactly(move1, move2);
+    }
 
 
 }

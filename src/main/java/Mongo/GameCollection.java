@@ -39,9 +39,9 @@ public class GameCollection {
         return players.findOne("{color: #", color).as(PlayerMongo.class);
     }
 
+
     public BoardMongo getBoard(){
         return board.findOne().as(BoardMongo.class);
-
     }
 
     public void savePlayer(PlayerMongo p){

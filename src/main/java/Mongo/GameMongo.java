@@ -23,6 +23,16 @@ public class GameMongo {
         players = new LinkedList<>();
     }
 
+    public GameMongo(GameCollection game){
+        try {
+            this.game = game;
+        } catch (Throwable e) {
+            System.out.println("Exception catch:");
+            e.printStackTrace();
+        }
+        moves = new LinkedList<>();
+        players = new LinkedList<>();
+    }
 
     public void addBoard(BoardMongo board){
         int columns = board.getColumns();
