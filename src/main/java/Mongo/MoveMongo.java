@@ -1,6 +1,12 @@
 package Mongo;
 
-public class MoveMongo {
+
+interface MoveMongoI{
+    public PlayerMongo getPlayer();
+    public Integer getColumn();
+    public Integer getOrder();
+}
+public class MoveMongo implements MoveMongoI{
     private PlayerMongo player;
     private Integer order;
     private Integer column;

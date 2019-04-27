@@ -10,12 +10,20 @@ import com.mongodb.MongoClient;
 
 
 
-
-public class GameCollection {
+interface GameCollectionI{
+    PlayerMongo findByName(String name);
+    PlayerMongo findByColor(String color);
+    void savePlayer(PlayerMongo p);
+    void saveMove(MoveMongo m);
+    void saveBoard(BoardMongo b);
+    void deleteMove(MoveMongo m);
+}
+public class GameCollection implements GameCollectionI{
 
     private MongoCollection players;
     private MongoCollection moves;
     private MongoCollection board;
+
 
     public GameCollection() throws UnknownHostException {
         @SuppressWarnings({ "deprecation", "resource" })

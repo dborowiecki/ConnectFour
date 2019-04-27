@@ -3,7 +3,15 @@ package Mongo;
 import java.util.Arrays;
 import java.util.List;
 
-public class PlayerMongo {
+interface PlayerMongoI{
+    String getName();
+    String getColor();
+    Integer getWins();
+    Integer getLose();
+    Integer getDraw();
+}
+
+public class PlayerMongo implements PlayerMongoI{
  //   private long _id;
     String name;
     String color;

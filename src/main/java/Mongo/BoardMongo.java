@@ -1,7 +1,15 @@
 package Mongo;
 
+interface BoardMongoI{
+    int getRows();
+    int getColumns();
+    void incNumberOfMoves();
+    void decNumberOfMoves();
+    int getNumberOfMoves();
 
-public class BoardMongo {
+}
+
+public class BoardMongo implements BoardMongoI{
     private int rows;
     private int columns;
     private int numberOfMoves;
