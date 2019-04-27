@@ -1,19 +1,15 @@
-package MongoTest;
-import Mongo.*;
+package Mongo;
 import org.assertj.core.api.Assertions;
 import org.easymock.*;
-import org.easymock.internal.MocksControl;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.*;
 import static org.easymock.MockType.NICE;
 
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
