@@ -1,15 +1,6 @@
 package Mongo;
 
 
-interface MoveMongoI{
-    public PlayerMongoI getPlayer();
-    public Integer getColumn();
-    public Integer getOrder();
-    void setPlayer(PlayerMongoI p);
-    void setColumn(Integer column);
-    void setOrder(Integer order);
-}
-
 public class MoveMongo implements MoveMongoI{
     private PlayerMongoI player;
     private Integer order;

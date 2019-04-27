@@ -1,5 +1,10 @@
 package Game;
 
+import Mongo.BoardMongo;
+import Mongo.GameMongo;
+import Mongo.PlayerMongo;
+import Mongo.PlayerMongoI;
+
 import java.beans.Transient;
 import java.io.*;
 import java.util.*;
@@ -17,9 +22,12 @@ public class GameManager implements Serializable {
     private transient Scanner sc;
     private int numberOfFields;
 
+    private GameMongo databaseService;
+
 
     @Transient
     public void startGame(){
+        connectToDatabase();
         setUpGame();
         addPlayers();
         runGame();
@@ -70,12 +78,20 @@ public class GameManager implements Serializable {
                 System.out.print("Number of columns: ");
                 int numberOfColumns = sc.nextInt();
                 b = new Board(numberOfColumns, numberOfRows);
+
             }
             catch (IllegalArgumentException e){
                 System.out.println("Number of rows and columns are invalid, using regular size");
                 b = new Board();
             }
         }
+
+        if(databaseService!=null) {
+            databaseService.addBoard(
+                    new BoardMongo(getBoard().getNumberOfColumns(),
+                            getBoard().getNumberOfRows()));
+        }
+
         if(leadboard==null)
          setLeadboard("leadboard.csv");
 
@@ -120,6 +136,8 @@ public class GameManager implements Serializable {
                 break;
             }
         }
+        if(databaseService!=null)
+           databaseService.cleanTempData();
         sc.close();
     }
 
@@ -196,6 +214,8 @@ public class GameManager implements Serializable {
         }
         else {
             movesList.add(column);
+            if(databaseService!=null)
+                databaseService.makeMove(player,column);
             return true;
         }
     }
@@ -212,7 +232,8 @@ public class GameManager implements Serializable {
         else
             previousPlayer = playersMoveOrder.get(playersMoveOrder.indexOf(currentPlayer)-1);
 
-
+        if(databaseService!=null)
+             databaseService.reverseLastMove(currentPlayer);
         makeMove(previousPlayer, in);
     }
 
@@ -254,6 +275,17 @@ public class GameManager implements Serializable {
         playerColors.put(pName,asciiFormatColor);
         playersMoveOrder.add(pName);
         b.addPlayer(pName, asciiFormatColor);
+
+
+        if(databaseService!=null) {
+            PlayerMongoI p = databaseService.getPlayer(pName);
+            if (p != null) {
+                databaseService.addPlayer(p);
+                System.out.println("added eisting player");
+            } else
+                databaseService.addPlayer(new PlayerMongo(pName, pColor));
+        }
+
     }
 
     private void printDraw(){
@@ -270,12 +302,17 @@ public class GameManager implements Serializable {
             if(!player.equals(playerName))
                 sc.addScore(player, -1);
 
+       if(databaseService!=null)
+             databaseService.endGame(playerName);
     }
 
     private void saveDraw(){
         ScoreCsv sc = new ScoreCsv(leadboard);
         for(String player: playersMoveOrder)
             sc.addScore(player, 0);
+
+        if(databaseService!=null)
+            databaseService.endGameDraw();
     }
 
     @Transient
@@ -317,6 +354,10 @@ public class GameManager implements Serializable {
                 "o - save game");
     }
 
+    //Database connection
+    private void connectToDatabase(){
+        databaseService = new GameMongo();
+    }
 
     public Board getBoard(){
         return b;

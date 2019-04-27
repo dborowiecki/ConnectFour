@@ -1,29 +1,20 @@
 package Mongo;
 
+import org.jongo.marshall.jackson.oid.MongoId;
+
 import java.util.Arrays;
 import java.util.List;
 
-interface PlayerMongoI{
-    String getName();
-    String getColor();
-    Integer getWins();
-    Integer getLose();
-    Integer getDraw();
-    void setColor(String color);
-    void setName(String name);
-    void addWin();
-    void addLose();
-    void addDraw();
-}
-
 public class PlayerMongo implements PlayerMongoI{
- //   private long _id;
+
+    @MongoId
     String name;
     String color;
     Integer win;
     Integer draw;
     Integer lose;
 
+    public PlayerMongo(){}
     public PlayerMongo(String name, String color){
         this.setName(name);
         this.setColor(color);
@@ -31,7 +22,9 @@ public class PlayerMongo implements PlayerMongoI{
 
 
     public void setName(String name){
-
+        win=0;
+        draw=0;
+        lose=0;
         this.name = name;
     }
 
@@ -53,9 +46,7 @@ public class PlayerMongo implements PlayerMongoI{
     public Integer getLose(){ return lose;}
     public Integer getDraw(){ return draw; }
 
-    public void addWin(){
-       this.win=this.win+1;
-    }
+    public void addWin(){ this.win=this.win+1; }
     public void addLose(){
         this.lose = this.lose+1;
     }

@@ -242,6 +242,9 @@ class GameCollectionMock implements GameCollectionI{
 
     @Override
     public void deleteMove(MoveMongoI m) { moves.remove(m);}
+
+    @Override
+    public void removeTemporaryCollections() { }
 }
 
 class MoveMock implements MoveMongoI{

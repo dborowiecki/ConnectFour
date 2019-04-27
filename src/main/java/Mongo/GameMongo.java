@@ -51,6 +51,7 @@ public class GameMongo {
     public void addPlayer(PlayerMongoI player){
         String name = player.getName();
         String color = player.getColor();
+        color=color.toUpperCase();
         if(name==null || name.isEmpty())
             throw new IllegalArgumentException("Name can't be empty");
 
@@ -107,7 +108,6 @@ public class GameMongo {
 
         MoveMongoI last;
 
-
         for(int i=moves.size();i>0;i--){
             last = moves.get(moves.size()-1);
             if(last.getPlayer().equals(p)){
@@ -121,14 +121,25 @@ public class GameMongo {
 
     public void endGame(String winnerName){
         PlayerMongoI winner = game.findByName(winnerName);
+        boolean playerInGame=false;
 
-        if(!players.contains(winner))
-            throw new IllegalArgumentException("Player was not in game");
 
-        winner.addWin();
+        for(PlayerMongoI p: players)
+            if(p.getName().equals(winner.getName()))
+                 playerInGame=true;
+
+            if(!playerInGame)
+                 throw new IllegalArgumentException("Player was not in game");
+
+
+        game.savePlayer(winner);
+
         for(PlayerMongoI p: players){
-            if(!p.equals(winner))
+            if(!p.getName().equals(winnerName))
                p.addLose();
+            else
+                p.addWin();
+
             game.savePlayer(p);
         }
     }
@@ -142,6 +153,7 @@ public class GameMongo {
 
     public HashMap<String, Integer> getPlayerScore(String playerName){
         PlayerMongoI p = game.findByName(playerName);
+
         if(p==null)
             throw new IllegalArgumentException("Player not found");
 
@@ -175,4 +187,6 @@ public class GameMongo {
 
     public void setBoard(BoardMongoI b) {this.board = b;}
     public BoardMongoI getBoard() {return board;}
+    public PlayerMongoI getPlayer(String name) {return game.findByName(name);}
+    public void cleanTempData(){game.removeTemporaryCollections();}
 }

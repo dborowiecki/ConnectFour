@@ -5,19 +5,11 @@ import java.rmi.UnknownHostException;
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
 
+
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 
 
-
-interface GameCollectionI{
-    PlayerMongoI findByName(String name);
-    PlayerMongoI findByColor(String color);
-    void savePlayer(PlayerMongoI p);
-    void saveMove(MoveMongoI m);
-    void saveBoard(BoardMongoI b);
-    void deleteMove(MoveMongoI m);
-}
 public class GameCollection implements GameCollectionI{
 
     private MongoCollection players;
@@ -40,11 +32,11 @@ public class GameCollection implements GameCollectionI{
     }
 
     public PlayerMongoI findByName(String name){
-        return players.findOne("{name: #", name).as(PlayerMongo.class);
+        return players.findOne("{_id: '"+name+"'}").as(PlayerMongo.class);
     }
 
     public PlayerMongoI findByColor(String color){
-        return players.findOne("{color: #", color).as(PlayerMongo.class);
+        return players.findOne("{color:'"+color+"'}").as(PlayerMongo.class);
     }
 
 
@@ -62,9 +54,14 @@ public class GameCollection implements GameCollectionI{
     }
 
     public void deleteMove(MoveMongoI move){
-        moves.remove("{order: #",move.getOrder());
+        moves.remove("{order: '"+move.getOrder()+"'}");
     }
     public void saveBoard(BoardMongoI b){
         board.save(b);
+    }
+
+    public void removeTemporaryCollections(){
+        moves.drop();
+        board.drop();
     }
 }
