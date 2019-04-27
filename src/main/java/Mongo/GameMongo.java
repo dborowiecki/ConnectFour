@@ -104,11 +104,12 @@ public class GameMongo {
         PlayerMongo p = game.findByName(player);
 
         if(moves.size()==0)
-            throw new IllegalArgumentException("There vere no moves");
+            throw new IllegalArgumentException("There vwre no moves");
 
         MoveMongo last;
 
-        for(int i=moves.size()-1;i>0;i--){
+
+        for(int i=moves.size();i>0;i--){
             last = moves.get(moves.size()-1);
             if(last.getPlayer().equals(p)){
                 moves.remove(last);

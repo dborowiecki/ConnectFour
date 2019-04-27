@@ -140,8 +140,58 @@ public class GameMongoEasyTest {
         game.setMoves(new LinkedList<>());
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> game.reverseLastMove("name"))
-                .withMessage("There vere no moves")
+                .withMessage("There were no moves")
                 .withNoCause();
     }
+
+    @Test
+    public void reverseLastMoveTest(){
+        List<MoveMongo> newList = new LinkedList<>();
+        newList.add(moveMongo);
+        moveMongo.setPlayer(playerMongo);
+        game.setMoves(newList);
+        game.setBoard(boardMongo);
+        expect(gameCollection.findByName("player")).andReturn(playerMongo);
+        expect(moveMongo.getPlayer()).andReturn(playerMongo);
+        gameCollection.deleteMove(moveMongo);
+        expectLastCall().andAnswer(
+                new IAnswer() {
+                    public Object answer() {
+                        newList.remove(moveMongo);
+                        return null;
+                    }
+                });
+        replay(gameCollection,moveMongo);
+
+        game.reverseLastMove("player");
+
+        Assertions.assertThat(newList).isEmpty();
+    }
+
+    @Test
+    public void reverseLastPlayerWithoutMovesTest(){
+        List<MoveMongo> newList = new LinkedList<>();
+        PlayerMongo another = mock(PlayerMongo.class);
+        newList.add(moveMongo);
+        moveMongo.setPlayer(playerMongo);
+        game.setMoves(newList);
+        game.setBoard(boardMongo);
+        expect(gameCollection.findByName("player")).andReturn(another);
+        expect(moveMongo.getPlayer()).andReturn(playerMongo);
+        gameCollection.deleteMove(moveMongo);
+        expectLastCall().andAnswer(
+                new IAnswer() {
+                    public Object answer() {
+                        newList.remove(moveMongo);
+                        return null;
+                    }
+                });
+        replay(gameCollection,moveMongo);
+
+        game.reverseLastMove("player");
+
+        Assertions.assertThat(newList).hasAtLeastOneElementOfType(MoveMongo.class);
+    }
+
 }
 

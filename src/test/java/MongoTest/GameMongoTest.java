@@ -1,9 +1,6 @@
 package MongoTest;
 import Game.TerminalColrs;
-import Mongo.BoardMongo;
-import Mongo.GameCollection;
-import Mongo.GameMongo;
-import Mongo.PlayerMongo;
+import Mongo.*;
 import com.mongodb.MongoClient;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,6 +27,8 @@ public class GameMongoTest {
     PlayerMongo player;
     @Mock
     BoardMongo board;
+    @Mock
+    List<MoveMongo> moves;
 
 
     @InjectMocks
@@ -46,12 +45,15 @@ public class GameMongoTest {
 
     @Test
     public void emptyMovesAtStart(){
+        game.setMoves(moves);
+        doReturn(player).when(gameCollection).findByName("Player");
         Assertions.assertThat(game.getPlayerMoves("Player")).isEmpty();
     }
 
 
     @Test
     public void noPlayersAtStart(){
+
         Assertions.assertThat(game.getPlayers())
                 .isEmpty();
     }
