@@ -4,6 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.assertj.core.api.Assertions;
+
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -82,6 +84,38 @@ public class GamMongoCustomMockTest {
                 () -> Assertions.assertThat(player.getLose()).isEqualTo(0)
         );
     }
+
+    @Test
+    public void getPlayerScoreTest(){
+
+        game.addPlayer(player);
+        game.endGameDraw();
+        game.endGameDraw();
+        game.endGame("John Doe");
+        game.endGame("John Doe");
+        game.endGame("John Doe");
+        HashMap<String, Integer> result = game.getPlayerScore("John Doe");
+
+        Assertions.assertThat(result).containsEntry("Win",30)
+        .containsEntry("Lose", 0)
+        .containsEntry("Draw",20);
+    }
+
+    @Test
+    public void getScoreIllegalPlayerTest(){
+        game.addPlayer(player);
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> game.getPlayerScore("John"))
+                .withMessageContaining("Player not found")
+                .withNoCause();
+    }
+
+    @Test
+    public void getMovesTest(){
+        game.makeMove("John Doe", 0);
+        List<MoveMongoI> moves = game.getMoves();
+        Assertions.assertThat(moves).hasSize(1).hasOnlyElementsOfType(MoveMongo.class);
+    }
 }
 
 class BoardMock implements BoardMongoI{
@@ -137,13 +171,13 @@ class PlayerMock implements PlayerMongoI{
     public void setName(String name) { }
 
     @Override
-    public void addWin() { win=10;}
+    public void addWin() { win+=10;}
 
     @Override
-    public void addLose() { lose=10;}
+    public void addLose() { lose+=10;}
 
     @Override
-    public void addDraw() { draw=10;}
+    public void addDraw() { draw+=10;}
 }
 
 class GameCollectionMock implements GameCollectionI{

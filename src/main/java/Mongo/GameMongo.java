@@ -100,6 +100,14 @@ public class GameMongo {
         game.saveMove(m);
     }
 
+    public void addMove(MoveMongoI move){
+        for(MoveMongoI m: moves)
+            if(m.getOrder()==move.getOrder())
+                throw new IllegalArgumentException("2 moves cant be made at same time");
+        moves.add(move);
+        game.saveMove(move);
+    }
+
     public void reverseLastMove(String player){
         PlayerMongoI p = game.findByName(player);
 
@@ -143,6 +151,9 @@ public class GameMongo {
 
     public HashMap<String, Integer> getPlayerScore(String playerName){
         PlayerMongoI p = game.findByName(playerName);
+        if(p==null)
+            throw new IllegalArgumentException("Player not found");
+
         HashMap<String, Integer> score = new HashMap<>();
         score.put("Win", p.getWins());
         score.put("Lose", p.getLose());
