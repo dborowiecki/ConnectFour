@@ -124,11 +124,7 @@ public class GameMongo {
         boolean playerInGame=false;
 
 
-        for(PlayerMongoI p: players)
-            if(p.getName().equals(winner.getName()))
-                 playerInGame=true;
-
-            if(!playerInGame)
+       if(winner==null)
                  throw new IllegalArgumentException("Player was not in game");
 
 

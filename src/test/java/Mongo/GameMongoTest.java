@@ -125,6 +125,7 @@ public class GameMongoTest {
     public void addPlayerTestNullName(){
         //Arrange
         when(player.getName()).thenReturn(null);
+        when(player.getColor()).thenReturn("");
         //Act
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> game.addPlayer(player))
@@ -139,6 +140,7 @@ public class GameMongoTest {
     public void addPlayerTestEmptyName(){
         //Arrange
         when(player.getName()).thenReturn("");
+        when(player.getColor()).thenReturn("");
         //Act
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> game.addPlayer(player))

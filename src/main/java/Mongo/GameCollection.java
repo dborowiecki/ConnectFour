@@ -25,6 +25,11 @@ public class GameCollection implements GameCollectionI{
         board   = new Jongo(db).getCollection("board");
     }
 
+    public GameCollection(MongoCollection players,MongoCollection moves,MongoCollection board){
+        this.players=players;
+        this.moves=moves;
+        this.board=board;
+    }
     public void flushGame(){
         moves.drop();
         players.drop();
