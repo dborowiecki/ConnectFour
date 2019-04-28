@@ -1,27 +1,3 @@
-
-Skip to content
-Pull requests
-Issues
-Marketplace
-Explore
-@dborowiecki
-
-1
-0
-
-    0
-
-testowanieaplikacjijavaug/projekt1-dborowiecki Private
-Code
-Issues 1
-Pull requests 0
-Projects 0
-Wiki
-Insights
-projekt1-dborowiecki/.gitignore
-@dborowiecki dborowiecki added wrapper for gradlew functionality and exended gitignore 1259b67 24 days ago
-87 lines (65 sloc) 1.79 KB
-
 # Created by https://www.gitignore.io/api/intellij
 # Edit at https://www.gitignore.io/?templates=intellij
 
