@@ -30,11 +30,6 @@ public class GameCollection implements GameCollectionI{
         this.moves=moves;
         this.board=board;
     }
-    public void flushGame(){
-        moves.drop();
-        players.drop();
-        board.drop();
-    }
 
     public PlayerMongoI findByName(String name){
         return players.findOne("{_id: '"+name+"'}").as(PlayerMongo.class);
@@ -49,17 +44,16 @@ public class GameCollection implements GameCollectionI{
         return board.findOne().as(BoardMongo.class);
     }
 
+
     public void savePlayer(PlayerMongoI p){
         players.save(p);
     }
-
 
     public void saveMove(MoveMongoI move){
         moves.save(move);
     }
 
-    public void deleteMove(MoveMongoI move){
-        moves.remove("{order: '"+move.getOrder()+"'}");
+    public void deleteMove(MoveMongoI move){moves.remove("{order: '"+move.getOrder()+"'}");
     }
     public void saveBoard(BoardMongoI b){
         board.save(b);

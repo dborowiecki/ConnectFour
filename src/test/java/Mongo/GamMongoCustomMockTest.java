@@ -249,9 +249,9 @@ class GameCollectionMock implements GameCollectionI{
 
 class MoveMock implements MoveMongoI{
     private static int instances=0;
-
+    private int myNumber;
     public MoveMock(){
-        instances++;
+        myNumber=instances++;
     }
 
     @Override
@@ -264,7 +264,7 @@ class MoveMock implements MoveMongoI{
     public Integer getColumn() { return 1; }
 
     @Override
-    public Integer getOrder() { return  instances; }
+    public Integer getOrder() { return  myNumber; }
 
     @Override
     public void setPlayer(PlayerMongoI p) { }
