@@ -25,10 +25,29 @@ public class GameCollectionTest {
 
 
     @Test
-    public void mockTest(){
+    public void findByNameTest(){
         PlayerMongoI p = new PlayerMongo("John","red");
         doReturn(queryMock).when(mongoCollectionMock).findOne("{_id: 'John'}");
         doReturn(p).when(queryMock).as(PlayerMongo.class);
         Assertions.assertThat(gameCollection.findByName("John")).isEqualTo(p);
     }
+
+    @Test
+    public void findByColorTest(){
+        PlayerMongoI p = new PlayerMongo("John","red");
+        doReturn(queryMock).when(mongoCollectionMock).findOne("{color:'red'}");
+        doReturn(p).when(queryMock).as(PlayerMongo.class);
+        Assertions.assertThat(gameCollection.findByColor("red")).isEqualTo(p);
+    }
+
+    @Test
+    public void getBoardTest(){
+        BoardMongoI b = new BoardMongo(5,5);
+        doReturn(queryMock).when(mongoCollectionMock).findOne();
+        doReturn(b).when(queryMock).as(BoardMongo.class);
+
+        Assertions.assertThat(gameCollection.getBoard())
+                .isEqualToComparingFieldByFieldRecursively(b);
+    }
+
 }
