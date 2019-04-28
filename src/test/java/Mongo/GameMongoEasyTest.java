@@ -77,6 +77,7 @@ public class GameMongoEasyTest {
         List<MoveMongoI> moves = game.getPlayerMoves("player");
 
         assertThat(moves).isInstanceOf(List.class).containsExactly(move1, move2);
+        verify(gameCollection);
     }
 
     @Test
@@ -103,6 +104,8 @@ public class GameMongoEasyTest {
         game.makeMove("name", 0);
 
         Assertions.assertThat(moves).containsExactly(moveMongo);
+
+        verify(gameCollection);
     }
 
     @Test
@@ -115,6 +118,8 @@ public class GameMongoEasyTest {
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> game.makeMove("name",-1))
                 .withNoCause();
+
+        verify(gameCollection);
     }
 
     @Test
@@ -127,6 +132,8 @@ public class GameMongoEasyTest {
                 .isThrownBy(() -> game.makeMove("name",20))
                 .withMessageContaining("Column have to be between 0 and 10")
                 .withNoCause();
+
+        verify(gameCollection);
     }
 
     @Test
@@ -138,30 +145,7 @@ public class GameMongoEasyTest {
                 .isThrownBy(() -> game.reverseLastMove("name"))
                 .withMessage("There were no moves")
                 .withNoCause();
-    }
 
-    @Test
-    public void reverseLastMoveTest(){
-        List<MoveMongoI> newList = new LinkedList<>();
-        newList.add(moveMongo);
-        moveMongo.setPlayer(playerMongo);
-        game.setMoves(newList);
-        game.setBoard(boardMongo);
-        expect(gameCollection.findByName("player")).andReturn(playerMongo);
-        expect(moveMongo.getPlayer()).andReturn(playerMongo);
-        gameCollection.deleteMove(moveMongo);
-        expectLastCall().andAnswer(
-                new IAnswer() {
-                    public Object answer() {
-                        newList.remove(moveMongo);
-                        return null;
-                    }
-                });
-        replay(gameCollection,moveMongo);
-
-        game.reverseLastMove("player");
-
-        Assertions.assertThat(newList).isEmpty();
     }
 
     @Test
@@ -188,6 +172,33 @@ public class GameMongoEasyTest {
 
         Assertions.assertThat(newList).hasAtLeastOneElementOfType(MoveMongo.class);
     }
+
+    @Test
+    public void reverseLastMoveTest(){
+        List<MoveMongoI> newList = new LinkedList<>();
+        newList.add(moveMongo);
+        moveMongo.setPlayer(playerMongo);
+        game.setMoves(newList);
+        game.setBoard(boardMongo);
+        expect(gameCollection.findByName("player")).andReturn(playerMongo);
+        expect(moveMongo.getPlayer()).andReturn(playerMongo);
+        gameCollection.deleteMove(moveMongo);
+        expectLastCall().andAnswer(
+                new IAnswer() {
+                    public Object answer() {
+                        newList.remove(moveMongo);
+                        return null;
+                    }
+                });
+        replay(gameCollection,moveMongo);
+
+        game.reverseLastMove("player");
+
+        Assertions.assertThat(newList).isEmpty();
+
+        verify(gameCollection);
+    }
+
 
 }
 

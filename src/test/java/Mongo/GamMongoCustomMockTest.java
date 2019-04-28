@@ -249,7 +249,7 @@ class GameCollectionMock implements GameCollectionI{
 
 class MoveMock implements MoveMongoI{
     private static int instances=0;
-    private int myNumber;
+    int myNumber;
     public MoveMock(){
         myNumber=instances++;
     }

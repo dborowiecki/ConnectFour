@@ -66,8 +66,7 @@ public class GameColectionEasyTest {
         List<MoveMongoI> moves=new LinkedList<>();
         MoveMongoI removed = new MoveMock();
         moves.add(removed);
-        moves.add( new MoveMock());
-        moves.add( new MoveMock());
+        ((MoveMock) removed).myNumber=0;
 
         mongoCollectionMock.remove("{order: '0'}");
         expectLastCall().andAnswer(
@@ -82,7 +81,7 @@ public class GameColectionEasyTest {
 
         gameCollection.deleteMove(removed);
 
-        Assertions.assertThat(moves).hasSize(2);
+        Assertions.assertThat(moves).hasSize(0);
         verify(mongoCollectionMock);
     }
 
