@@ -45,10 +45,18 @@ dependencies {
     // https://mvnrepository.com/artifact/org.jongo/jongo
     compile group: 'org.jongo', name: 'jongo', version: '1.4.0'
 
+// https://mvnrepository.com/artifact/org.jmockit/jmockit
+    testCompile group: 'org.jmockit', name: 'jmockit', version: '1.45'
+    testCompile "org.jmockit:jmockit:1.45"
+
 
 }
+def jmockitVersion = '1.45'
 
+test {
+    jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
 
+}
 
 
 //jacocoTestReport {
