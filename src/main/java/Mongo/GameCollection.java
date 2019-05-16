@@ -2,6 +2,7 @@ package Mongo;
 
 import java.rmi.UnknownHostException;
 
+import com.mongodb.Mongo;
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
 
@@ -20,9 +21,13 @@ public class GameCollection implements GameCollectionI{
     public GameCollection() throws UnknownHostException {
         @SuppressWarnings({ "deprecation", "resource" })
         DB db = new MongoClient().getDB("game");
+
         players = new Jongo(db).getCollection("players");
         moves   = new Jongo(db).getCollection("moves");
         board   = new Jongo(db).getCollection("board");
+
+        //finding dummy to throw exception if connection does not exist
+        players.findOne("dummy");
     }
 
     public GameCollection(MongoCollection players,MongoCollection moves,MongoCollection board){

@@ -11,13 +11,17 @@ public class GameMongo {
     private GameCollectionI game;
     List<MoveMongoI> moves;
     List<PlayerMongoI> players;
+    boolean exist;
 
     public GameMongo(){
         try {
             game = new GameCollection();
+            exist = true;
         } catch (Throwable e) {
-            System.out.println("Exception catch:");
-            e.printStackTrace();
+            System.out.println("Connection to database failed");
+            System.out.println(e.getMessage());
+         //   e.printStackTrace();
+            exist = false;
         }
         moves = new LinkedList<>();
         players = new LinkedList<>();
@@ -26,9 +30,12 @@ public class GameMongo {
     public GameMongo(GameCollectionI game){
         try {
             this.game = game;
+            exist = true;
         } catch (Throwable e) {
-            System.out.println("Exception catch:");
-            e.printStackTrace();
+            System.out.println("Connection to database failed");
+            System.out.println(e.getMessage());
+          //  e.printStackTrace();
+            exist = false;
         }
         moves = new LinkedList<>();
         players = new LinkedList<>();
@@ -176,6 +183,9 @@ public class GameMongo {
         this.moves = moves;
     }
 
+    public boolean Exist(){
+        return exist;
+    }
 
     public MoveMongoI getLastMove(){
         return moves.get(moves.size()-1);

@@ -346,6 +346,7 @@ public class GameManagerTest {
     private void createSetUp(){
         ByteArrayInputStream in = new ByteArrayInputStream("Y\n".getBytes());
         System.setIn(in);
+
         gm.setUpGame();
         System.setIn(System.in);
     }

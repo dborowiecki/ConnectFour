@@ -22,12 +22,13 @@ public class GameManager implements Serializable {
     private transient Scanner sc;
     private int numberOfFields;
 
+
+
     private GameMongo databaseService;
 
 
     @Transient
     public void startGame(){
-        connectToDatabase();
         setUpGame();
         addPlayers();
         runGame();
@@ -65,6 +66,7 @@ public class GameManager implements Serializable {
     }
 
     public void setUpGame(){
+        connectToDatabase();
         sc = new Scanner(System.in);
         System.out.print("Default board size? (Y/n)");
         String def = sc.nextLine();
@@ -86,7 +88,7 @@ public class GameManager implements Serializable {
             }
         }
 
-        if(databaseService!=null) {
+        if(databaseService.Exist()) {
             databaseService.addBoard(
                     new BoardMongo(getBoard().getNumberOfColumns(),
                             getBoard().getNumberOfRows()));
@@ -136,7 +138,7 @@ public class GameManager implements Serializable {
                 break;
             }
         }
-        if(databaseService!=null)
+        if(databaseService.Exist())
            databaseService.cleanTempData();
         sc.close();
     }
@@ -214,7 +216,7 @@ public class GameManager implements Serializable {
         }
         else {
             movesList.add(column);
-            if(databaseService!=null)
+            if(databaseService.Exist())
                 databaseService.makeMove(player,column);
             return true;
         }
@@ -232,7 +234,7 @@ public class GameManager implements Serializable {
         else
             previousPlayer = playersMoveOrder.get(playersMoveOrder.indexOf(currentPlayer)-1);
 
-        if(databaseService!=null)
+        if(databaseService.Exist())
              databaseService.reverseLastMove(currentPlayer);
         makeMove(previousPlayer, in);
     }
@@ -277,7 +279,7 @@ public class GameManager implements Serializable {
         b.addPlayer(pName, asciiFormatColor);
 
 
-        if(databaseService!=null) {
+        if(databaseService.Exist()) {
             PlayerMongoI p = databaseService.getPlayer(pName);
             if (p != null) {
                 databaseService.addPlayer(p);
@@ -302,7 +304,7 @@ public class GameManager implements Serializable {
             if(!player.equals(playerName))
                 sc.addScore(player, -1);
 
-       if(databaseService!=null)
+       if(databaseService.Exist())
              databaseService.endGame(playerName);
     }
 
@@ -311,7 +313,7 @@ public class GameManager implements Serializable {
         for(String player: playersMoveOrder)
             sc.addScore(player, 0);
 
-        if(databaseService!=null)
+        if(databaseService.Exist())
             databaseService.endGameDraw();
     }
 
@@ -319,7 +321,7 @@ public class GameManager implements Serializable {
     private boolean saveGame(Scanner sc){
         System.out.println("Name for next save: ");
         String saveName;
-
+        databaseService = null;
         do {
             saveName = sc.nextLine().toLowerCase();
         } while(!(saveName.length()>0));
@@ -355,8 +357,10 @@ public class GameManager implements Serializable {
     }
 
     //Database connection
+    @Transient
     private void connectToDatabase(){
         databaseService = new GameMongo();
+        System.out.println(databaseService.Exist());
     }
 
     public Board getBoard(){
